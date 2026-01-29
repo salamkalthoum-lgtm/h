@@ -37,133 +37,69 @@
             overflow-x: hidden;
         }
         
-        /* القائمة العلوية الجديدة */
-        .top-nav {
+        /* القائمة الجانبية */
+        .sidebar {
             position: fixed;
-            top: 0;
             right: 0;
-            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 250px;
             background-color: var(--primary-color);
             color: var(--white);
+            padding: 20px 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            max-height: 70px;
-            overflow: hidden;
-        }
-        
-        .top-nav.expanded {
-            max-height: 400px;
             overflow-y: auto;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
         
-        .nav-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
+        .sidebar-header {
+            text-align: center;
+            padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
         }
         
-        .nav-header h1 {
+        .sidebar-header h2 {
             font-size: 1.5rem;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 5px;
         }
         
-        .nav-toggle {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        .sidebar-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
         
-        .nav-toggle.rotated {
-            transform: rotate(180deg);
-        }
-        
-        .nav-menu-container {
-            position: relative;
-            padding: 0 40px;
-        }
-        
-        .nav-menu {
+        .sidebar-menu {
             list-style: none;
-            display: flex;
-            overflow-x: auto;
-            gap: 5px;
-            padding: 15px 0;
-            margin: 0;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
         }
         
-        .nav-menu::-webkit-scrollbar {
-            display: none;
+        .sidebar-menu li {
+            padding: 0;
         }
         
-        .nav-menu li {
-            flex-shrink: 0;
-        }
-        
-        .nav-menu a {
+        .sidebar-menu a {
             display: block;
-            padding: 10px 15px;
+            padding: 15px 20px;
             color: var(--white);
             text-decoration: none;
-            border-radius: 20px;
             transition: all 0.3s ease;
-            white-space: nowrap;
+            border-right: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
             background-color: rgba(255, 255, 255, 0.1);
+            border-right: 4px solid var(--ramadan-gold);
         }
         
-        .nav-menu a:hover, .nav-menu a.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .nav-menu i {
-            margin-left: 8px;
-        }
-        
-        /* أزرار التمرير */
-        .nav-scroll-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .top-nav:hover .nav-scroll-btn {
-            opacity: 1;
-        }
-        
-        .scroll-left {
-            right: 5px;
-        }
-        
-        .scroll-right {
-            left: 5px;
+        .sidebar-menu i {
+            width: 25px;
+            margin-left: 10px;
         }
         
         /* المحتوى الرئيسي */
         .main-content {
-            margin-top: 70px;
+            margin-right: 250px;
             padding: 20px;
             min-height: 100vh;
         }
@@ -527,21 +463,103 @@
         }
         
         /* المهام اليومية */
-        .tasks-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: var(--light-gray);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        
+       /* تنسيق بطاقات الأدعية والأحاديث الجديدة */
+.dua-card {
+    background: linear-gradient(135deg, #e6f7ff, #ffffff);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+}
+
+.hadith-card {
+    background: linear-gradient(135deg, #f0f8ff, #ffffff);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+}
+
+.dua-card:hover, .hadith-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(138, 43, 226, 0.15);
+}
+
+.dua-card.active, .hadith-card.active {
+    border-color: var(--ramadan-gold);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.dua-card.completed, .hadith-card.completed {
+    border-color: var(--success);
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), #ffffff);
+}
+
+.dua-day, .hadith-day {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dua-text, .hadith-text {
+    font-size: 0.95rem;
+    color: var(--dark-gray);
+    margin-bottom: 15px;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.dua-status, .hadith-status {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.dua-status.completed, .hadith-status.completed {
+    background-color: var(--success);
+    color: white;
+}
+
+/* أيقونة صغيرة في الزاوية */
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
         .task-item.completed {
             background-color: rgba(40, 167, 69, 0.1);
         }
@@ -627,104 +645,6 @@
         .name-meaning {
             font-size: 0.9rem;
             color: var(--dark-gray);
-        }
-        
-        /* تنسيق بطاقات الأدعية والأحاديث الجديدة */
-        .dua-card {
-            background: linear-gradient(135deg, #e6f7ff, #ffffff);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .hadith-card {
-            background: linear-gradient(135deg, #f0f8ff, #ffffff);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .dua-card:hover, .hadith-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.15);
-        }
-
-        .dua-card.active, .hadith-card.active {
-            border-color: var(--ramadan-gold);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .dua-card.completed, .hadith-card.completed {
-            border-color: var(--success);
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), #ffffff);
-        }
-
-        .dua-day, .hadith-day {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .dua-text, .hadith-text {
-            font-size: 0.95rem;
-            color: var(--dark-gray);
-            margin-bottom: 15px;
-            line-height: 1.6;
-            flex-grow: 1;
-        }
-
-        .dua-status, .hadith-status {
-            font-size: 0.85rem;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        .dua-status.completed, .hadith-status.completed {
-            background-color: var(--success);
-            color: white;
-        }
-
-        /* أيقونة صغيرة في الزاوية */
-        .card-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: bold;
         }
         
         /* الروزنامة */
@@ -915,7 +835,23 @@
         .dua-item.completed .dua-checkbox i {
             display: block;
         }
-        
+        .counter-display {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.counter-display:active {
+    transform: scale(0.95);
+    background-color: rgba(138, 43, 226, 0.1);
+    border-radius: 10px;
+}
+
+/* إضافة تأثير التوهج عند التفاعل */
+.counter-display:hover {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+}
         .dua-checkbox {
             width: 25px;
             height: 25px;
@@ -1048,37 +984,38 @@
         }
         
         /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            
+            .sidebar.active {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-right: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1001;
+                background-color: var(--primary-color);
+                color: var(--white);
+                border: none;
+                border-radius: 8px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .top-nav.expanded {
-                max-height: 500px;
-            }
-            
-            .nav-menu-container {
-                padding: 0;
-            }
-            
-            .nav-menu {
-                flex-direction: column;
-                overflow-x: hidden;
-                overflow-y: auto;
-                max-height: 300px;
-                gap: 0;
-            }
-            
-            .nav-menu li {
-                width: 100%;
-            }
-            
-            .nav-menu a {
-                border-radius: 0;
-                padding: 12px 20px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .nav-scroll-btn {
-                display: none;
-            }
-            
             .dashboard-cards {
                 grid-template-columns: 1fr;
             }
@@ -1094,18 +1031,9 @@
             .header h1 {
                 font-size: 2rem;
             }
-            
-            .main-content {
-                margin-top: 65px;
-                padding: 15px;
-            }
         }
         
-        @media (max-width: 480px) {
-            .nav-header h1 {
-                font-size: 1.3rem;
-            }
-            
+        @media (max-width: 576px) {
             .prayer-times {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -1124,12 +1052,6 @@
             
             .counter-display {
                 font-size: 3rem;
-            }
-            
-            .notifications {
-                width: 300px;
-                left: 10px;
-                bottom: 10px;
             }
         }
         
@@ -1254,6 +1176,24 @@
             font-size: 1rem;
         }
         
+        /* تعديلات خاصة للتسبيح والمهام */
+        .day-locked {
+            position: relative;
+        }
+        
+        .day-locked::after {
+            content: "اليوم فقط";
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: var(--warning);
+            color: var(--dark-gray);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
         /* ساعة الوقت الحقيقي */
         #realTimeClock {
             animation: pulse 2s infinite;
@@ -1315,40 +1255,30 @@
         <!-- سيتم إضافة الإشعارات ديناميكيا -->
     </div>
     
-    <!-- القائمة العلوية الجديدة -->
-    <div class="top-nav" id="topNav">
-        <div class="nav-header">
-            <h1><i class="fas fa-moon"></i> يومك في رمضان</h1>
-            <button class="nav-toggle" id="navToggle">
-                <i class="fas fa-arrow-down"></i>
-            </button>
+    <!-- القائمة الجانبية -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-moon"></i> يومك في رمضان</h2>
+            <p>تهنئة طيبة... ورمضان مبارك</p>
         </div>
-        
-        <button class="nav-scroll-btn scroll-left" id="scrollLeft">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <div class="nav-menu-container">
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#dashboard" class="active" onclick="showSection('dashboard')"><i class="fas fa-home"></i> الصفحة الرئيسية</a></li>
-                <li><a href="#tasbeeh" onclick="showSection('tasbeeh')"><i class="fas fa-pray"></i> التسبيح اليومي</a></li>
-                <li><a href="#prayer-times" onclick="showSection('prayer-times')"><i class="fas fa-clock"></i> أوقات الصلاة</a></li>
-                <li><a href="#quran" onclick="showSection('quran')"><i class="fas fa-book-quran"></i> القرآن الكريم</a></li>
-                <li><a href="#memorization" onclick="showSection('memorization')"><i class="fas fa-brain"></i> حفظ القرآن</a></li>
-                <li><a href="#daily-tasks" onclick="showSection('daily-tasks')"><i class="fas fa-tasks"></i> المهام اليومية</a></li>
-                <li><a href="#duas" onclick="showSection('duas')"><i class="fas fa-hands-praying"></i> الأدعية اليومية</a></li>
-                <li><a href="#hadith" onclick="showSection('hadith')"><i class="fas fa-book"></i> الحديث اليومي</a></li>
-                <li><a href="#challenges" onclick="showSection('challenges')"><i class="fas fa-trophy"></i> تحديات رمضان</a></li>
-                <li><a href="#allah-names" onclick="showSection('allah-names')"><i class="fas fa-star"></i> أسماء الله الحسنى</a></li>
-                <li><a href="#adhkar" onclick="showSection('adhkar')"><i class="fas fa-dharmachakra"></i> أذكار الصباح والمساء</a></li>
-                <li><a href="#personal-duas" onclick="showSection('personal-duas')"><i class="fas fa-pen"></i> أدعية شخصية</a></li>
-            </ul>
-        </div>
-        
-        <button class="nav-scroll-btn scroll-right" id="scrollRight">
-            <i class="fas fa-chevron-left"></i>
-        </button>
+        <ul class="sidebar-menu">
+            <li><a href="#dashboard" class="active" onclick="showSection('dashboard')"><i class="fas fa-home"></i> الصفحة الرئيسية</a></li>
+            <li><a href="#tasbeeh" onclick="showSection('tasbeeh')"><i class="fas fa-pray"></i> التسبيح اليومي</a></li>
+            <li><a href="#prayer-times" onclick="showSection('prayer-times')"><i class="fas fa-clock"></i> أوقات الصلاة</a></li>
+            <li><a href="#quran" onclick="showSection('quran')"><i class="fas fa-book-quran"></i> القرآن الكريم</a></li>
+            <li><a href="#memorization" onclick="showSection('memorization')"><i class="fas fa-brain"></i> حفظ القرآن</a></li>
+            <li><a href="#daily-tasks" onclick="showSection('daily-tasks')"><i class="fas fa-tasks"></i> المهام اليومية</a></li>
+            <li><a href="#duas" onclick="showSection('duas')"><i class="fas fa-hands-praying"></i> الأدعية اليومية</a></li>
+            <li><a href="#hadith" onclick="showSection('hadith')"><i class="fas fa-book"></i> الحديث اليومي</a></li>
+            <li><a href="#challenges" onclick="showSection('challenges')"><i class="fas fa-trophy"></i> تحديات رمضان</a></li>
+            <li><a href="#allah-names" onclick="showSection('allah-names')"><i class="fas fa-star"></i> أسماء الله الحسنى</a></li>
+            <li><a href="#adhkar" onclick="showSection('adhkar')"><i class="fas fa-dharmachakra"></i> أذكار الصباح والمساء</a></li>
+            <li><a href="#personal-duas" onclick="showSection('personal-duas')"><i class="fas fa-pen"></i> أدعية شخصية</a></li>
+        </ul>
     </div>
+    
+    <!-- زر فتح القائمة للشاشات الصغيرة -->
+    <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
     
     <!-- المحتوى الرئيسي -->
     <div class="main-content" id="mainContent">
@@ -1794,13 +1724,13 @@
                             <span id="currentDuaStatus">لم يُقرأ</span>
                         </div>
                     </div>
-                    <button class="btn btn-success mt-3" id="completeDuaBtn" onclick="completeDua()">قراءة الدعاء</button>
+                    <button class="btn btn-success mt-3" id="completeDuaBtn" onclick="completeDua()">تمت قراءة الدعاء</button>
                 </div>
             </div>
             
-            <h3 class="section-title mt-4">جميع أدعية رمضان الـ 30</h3>
+            <h3 class="section-title mt-4">جميع أدعية رمضان</h3>
             <div class="names-grid" id="duasGrid">
-                <!-- سيتم إضافة الأدعية في بطاقات ديناميكيا -->
+                <!-- سيتم إضافة الأدعية ديناميكيا -->
             </div>
         </section>
         
@@ -1824,13 +1754,13 @@
                             <span id="currentHadithStatus">لم يُقرأ</span>
                         </div>
                     </div>
-                    <button class="btn btn-success mt-3" id="completeHadithBtn" onclick="completeHadith()">قراءة الحديث</button>
+                    <button class="btn btn-success mt-3" id="completeHadithBtn" onclick="completeHadith()">تمت قراءة الحديث</button>
                 </div>
             </div>
             
-            <h3 class="section-title mt-4">جميع أحاديث رمضان الـ 30</h3>
+            <h3 class="section-title mt-4">جميع أحاديث رمضان</h3>
             <div class="names-grid" id="hadithsGrid">
-                <!-- سيتم إضافة الأحاديث في بطاقات ديناميكيا -->
+                <!-- سيتم إضافة الأحاديث ديناميكيا -->
             </div>
         </section>
         
@@ -1999,7 +1929,7 @@
         
         // بيانات التسبيحات
         const tasbeehat = [
-             { text: "سبحان الله", count: 100 },
+            { text: "سبحان الله", count: 100 },
             { text: "الحمد لله", count: 100 },
             { text: "الله أكبر", count: 100 },
             { text: "لا إله إلا الله", count: 100 },
@@ -2052,7 +1982,7 @@
         
         // بيانات الأدعية اليومية
         const dailyDuas = [
-            "اللهم اطمئن قلبي واصرف عني ما يقلقني.",
+            "اللهم طمئن قلبي واصرف عني ما يقلقني.",
             "يا رب اجعل لي من كل همٍّ فرجًا ومن كل ضيق مخرجًا.",
             "اللهم لا تكلني لنفسي طرفة عين.",
             "ربّي ارزقني راحة البال وحسن الظن بك.",
@@ -2114,7 +2044,7 @@
             { text: "عن أنس بن مالك رضي الله عنه قال: قال رسول الله ﷺ: «المرء مع من أحب» (رواه البخاري ومسلم)", title: "المرء مع من أحب" },
             { text: "عن ابن عباس رضي الله عنهما قال: قال رسول الله ﷺ: «نعمتان مغبون فيهما كثير من الناس: الصحة والفراغ» (رواه البخاري)", title: "نعمة الصحة والفراغ" },
             { text: "عن أبي هريرة rضى الله عنه قال: قال رسول الله ﷺ: «ما نقص مال من صدقة» (رواه مسلم)", title: "الصدقة لا تنقص المال" },
-            { text: "عن عبد الله بن عمرو rضى الله عنهما قال: قال رسول الله ﷺ: «أقربكم مني مجلسًا يوم القيامة أحاسنكم أخلاقًا» (رواه الترمذي)", title: "حسن الخلق" },
+            { text: "عن عبد الله بن عمرو رضي الله عنهما قال: قال رسول الله ﷺ: «أقربكم مني مجلسًا يوم القيامة أحاسنكم أخلاقًا» (رواه الترمذي)", title: "حسن الخلق" },
             { text: "عن عائشة رضي الله عنها قالت: قال رسول الله ﷺ: «إن الله رفيق يحب الرفق في الأمر كله» (رواه مسلم)", title: "الرفق في الأمر" }
         ];
         
@@ -2187,7 +2117,7 @@
         ];
         
         // بيانات أذكار الصباح
-       const morningAdhkar = [
+        const morningAdhkar = [
             { text: "اللّهُ لا إلهَ إلا هو الحيُّ القيّوم… (آية الكرسي)", count: 1 },
             { text: "   قُلۡ هُوَ ٱللَّهُ أَحَدٌ (1) ٱللَّهُ ٱلصَّمَدُ (2) لَمۡ يَلِدۡ وَلَمۡ يُولَدۡ (3) وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ (4)", count: 3 },
             { text: "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ (1) مِن شَرِّ مَا خَلَقَ (2) وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ (3) وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِي ٱلۡعُقَدِ (4) وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ (5)   ", count: 3 },
@@ -2296,6 +2226,7 @@
             29: { الفجر: "05:19", الشروق: "06:41", الظهر: "12:43", العصر: "16:09", المغرب: "18:45", العشاء: "20:03" },
             30: { الفجر: "05:17", الشروق: "06:40", الظهر: "12:42", العصر: "16:09", المغرب: "18:45", العشاء: "20:03" }
         };
+        
         // الحالة المحفوظة في localStorage
         let appState = {
             userName: "",
@@ -2322,24 +2253,28 @@
         // دالة لحساب اليوم الأول من رمضان بناءً على التاريخ الحالي
         function calculateRamadanStart(currentDate) {
             // رمضان 2026 يبدأ يوم 18 فبراير 2026
-            const ramadanStart2026 = new Date(2026, 1, 18);
+            const ramadanStart2026 = new Date(2026, 1, 18); // فبراير هو الشهر 1 (0 = يناير)
             
+            // احسب الفرق بالأيام بين التاريخ الحالي وبداية رمضان 2026
             const diffTime = currentDate.getTime() - ramadanStart2026.getTime();
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
+            // إذا كان التاريخ قبل رمضان
             if (diffDays < 0) {
                 return {
                     ramadanStarted: false,
                     daysUntilRamadan: Math.abs(diffDays)
                 };
             }
+            // إذا كان التاريخ أثناء رمضان
             else if (diffDays >= 0 && diffDays < 30) {
                 return {
                     ramadanStarted: true,
-                    currentRamadanDay: diffDays + 1,
+                    currentRamadanDay: diffDays + 1, // +1 لأن اليوم الأول هو 1
                     daysSinceStart: diffDays
                 };
             }
+            // إذا كان التاريخ بعد رمضان
             else {
                 return {
                     ramadanStarted: false,
@@ -2407,6 +2342,7 @@
                 noteText = "💡 استخدام للتدريب فقط - رمضان لم يبدأ بعد";
             }
             
+            // عرض الملاحظة
             let noteElement = document.getElementById('ramadanDayNote');
             if (!noteElement) {
                 noteElement = document.createElement('div');
@@ -2443,28 +2379,34 @@
         
         // دالة للتحديث التلقائي للتاريخ
         function setupAutoDateUpdate() {
+            // تحديث كل دقيقة (60000 ميلي ثانية)
             setInterval(() => {
                 const today = new Date();
                 const ramadanInfo = calculateRamadanStart(today);
                 
+                // إذا كان رمضان قد بدأ
                 if (ramadanInfo.ramadanStarted) {
                     const newDay = ramadanInfo.currentRamadanDay;
                     
+                    // إذا تغير اليوم
                     if (newDay !== currentDay) {
                         currentDay = newDay;
                         currentTasbeehIndex = currentDay - 1;
                         appState.currentDay = currentDay;
                         
+                        // حفظ في localStorage
                         localStorage.setItem('ramadanAppState', JSON.stringify(appState));
                         
+                        // تحديث واجهة المستخدم
                         updateUI();
                         
+                        // إشعار بتغير اليوم
                         if (currentDay > 1) {
                             showNotification(`اليوم ${currentDay} من رمضان`, "مبروك! يوم جديد مبارك", "info");
                         }
                     }
                 }
-            }, 60000);
+            }, 60000); // كل دقيقة
         }
         
         // دالة للتحقق من تغيير اليوم عند فتح البرنامج
@@ -2475,14 +2417,18 @@
             if (ramadanInfo.ramadanStarted) {
                 const newDay = ramadanInfo.currentRamadanDay;
                 
+                // إذا كان اليوم المخزن مختلف عن اليوم الحقيقي
                 if (appState.currentDay !== newDay) {
+                    // سؤال المستخدم إذا كان يريد تحديث اليوم
                     if (confirm(`تم تغيير اليوم! اليوم الحالي هو ${newDay} من رمضان.\nهل تريد تحديث البرنامج لليوم الجديد؟`)) {
                         currentDay = newDay;
                         currentTasbeehIndex = currentDay - 1;
                         appState.currentDay = currentDay;
                         
+                        // حفظ في localStorage
                         localStorage.setItem('ramadanAppState', JSON.stringify(appState));
                         
+                        // تحديث واجهة المستخدم
                         updateUI();
                         
                         showNotification(`اليوم ${currentDay} من رمضان`, "تم تحديث البرنامج لليوم الجديد", "success");
@@ -2492,1433 +2438,1607 @@
         }
         
         // دالة لعرض الوقت الحالي وتنبيه تغيير اليوم
-        function setupRealTimeClock() {
-            setInterval(() => {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('ar-SA');
-                const dateString = formatDate(now);
-                
-                const clockElement = document.getElementById('realTimeClock');
-                if (clockElement) {
-                    clockElement.innerHTML = `<i class="fas fa-clock"></i> ${dateString} - ${timeString}`;
-                }
-                
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-                
-                if (hours === 0 && minutes === 0 && seconds === 0) {
-                    setTimeout(() => {
-                        const newDay = new Date();
-                        const ramadanInfo = calculateRamadanStart(newDay);
-                        
-                        if (ramadanInfo.ramadanStarted) {
-                            const newRamadanDay = ramadanInfo.currentRamadanDay;
-                            
-                            if (newRamadanDay !== currentDay) {
-                                currentDay = newRamadanDay;
-                                currentTasbeehIndex = currentDay - 1;
-                                appState.currentDay = currentDay;
-                                
-                                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                                
-                                updateUI();
-                                
-                                showNotification(`اليوم ${currentDay} من رمضان`, "مبروك! يوم جديد مبارك في رمضان", "info");
-                                
-                                loadTodayData();
-                            }
-                        }
-                    }, 5000);
-                }
-            }, 1000);
+      // دالة لعرض الوقت الحالي وتنبيه تغيير اليوم
+function setupRealTimeClock() {
+    // تحديث الوقت كل ثانية
+    setInterval(() => {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('ar-SA');
+        const dateString = formatDate(now);
+        
+        const clockElement = document.getElementById('realTimeClock');
+        if (clockElement) {
+            clockElement.innerHTML = `<i class="fas fa-clock"></i> ${dateString} - ${timeString}`;
         }
         
-        // دالة تحميل بيانات اليوم
-        function loadTodayData() {
-            updateTasbeehSection();
-            updateQuranSection();
-            updateTasksSection();
-            updateDuasSection();
-            updateHadithsSection();
-            updateChallengesSection();
-            updateAllahNamesSection();
-            updateAdhkarSection();
-            updateDashboard();
-        }
+        // التحقق من تغيير اليوم عند منتصف الليل
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
         
-        // دالة تحديث الصفحة الرئيسية
-        function updateDashboard() {
-            document.getElementById('dayCounter').textContent = `اليوم ${currentDay} من رمضان`;
-            
-            const todayNameIndex = currentDay - 1;
-            if (todayNameIndex < allahNames.length) {
-                document.getElementById('todaysName').textContent = allahNames[todayNameIndex].name;
-                document.getElementById('nameExplanation').textContent = allahNames[todayNameIndex].meaning;
-            }
-            
-            const tasbeeh = tasbeehat[todayNameIndex] || tasbeehat[0];
-            document.getElementById('todayTasbeeh').textContent = `${tasbeeh.text} ${tasbeeh.count} مرة`;
-            
-            const tasbeehProgress = appState.tasbeehCounts[todayNameIndex] || 0;
-            const tasbeehPercentage = Math.min(100, (tasbeehProgress / tasbeeh.count) * 100);
-            document.getElementById('tasbeehProgress').textContent = `${Math.round(tasbeehPercentage)}%`;
-            document.getElementById('tasbeehProgressBar').style.width = `${tasbeehPercentage}%`;
-            
-            document.getElementById('todayQuran').textContent = `الجزء ${currentDay}`;
-            const quranProgress = currentDay * (100/30);
-            document.getElementById('quranProgress').textContent = `${Math.round(quranProgress)}%`;
-            document.getElementById('quranProgressBar').style.width = `${quranProgress}%`;
-            
-            const taskIndex = (currentDay - 1) % dailyTasks.length;
-            document.getElementById('todayTask').textContent = dailyTasks[taskIndex];
-            document.getElementById('taskStatus').textContent = appState.tasksCompleted[todayNameIndex] ? "مكتملة" : "غير مكتملة";
-            
-            const duaIndex = (currentDay - 1) % dailyDuas.length;
-            document.getElementById('todayDua').textContent = dailyDuas[duaIndex];
-            
-            const readDuasCount = appState.duasCompleted.filter(Boolean).length;
-            const duasPercentage = Math.round((readDuasCount / dailyDuas.length) * 100);
-            document.getElementById('duaStatus').textContent = `${readDuasCount}/${dailyDuas.length} (${duasPercentage}%)`;
-            
-            const challengeIndex = (currentDay - 1) % ramadanChallenges.length;
-            document.getElementById('todayChallenge').textContent = ramadanChallenges[challengeIndex];
-            document.getElementById('challengeStatus').textContent = appState.challengesCompleted[todayNameIndex] ? "مكتمل" : "قيد التنفيذ";
-            
-            const hadithIndex = (currentDay - 1) % dailyHadiths.length;
-            document.getElementById('todayHadith').textContent = dailyHadiths[hadithIndex].text;
-            
-            const readHadithsCount = appState.hadithsCompleted.filter(Boolean).length;
-            const hadithsPercentage = Math.round((readHadithsCount / dailyHadiths.length) * 100);
-            document.getElementById('hadithStatus').textContent = `${readHadithsCount}/${dailyHadiths.length} (${hadithsPercentage}%)`;
-            
-            document.getElementById('todayMemorization').textContent = `5 آيات من سورة البقرة`;
-            const memorizationProgress = currentDay * (100/30);
-            document.getElementById('memorizationProgress').textContent = `${Math.round(memorizationProgress)}%`;
-            document.getElementById('memorizationProgressBar').style.width = `${memorizationProgress}%`;
-        }
-        
-        // دالة عرض الإشعارات
-        function showNotification(title, message, type = "info") {
-            const notifications = document.getElementById('notifications');
-            
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            let icon = "fa-info-circle";
-            if (type === "success") icon = "fa-check-circle";
-            if (type === "warning") icon = "fa-exclamation-circle";
-            if (type === "error") icon = "fa-times-circle";
-            
-            notification.innerHTML = `
-                <i class="fas ${icon}"></i>
-                <div class="notification-content">
-                    <h4>${title}</h4>
-                    <p>${message}</p>
-                </div>
-                <button class="notification-close" onclick="this.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            
-            notifications.appendChild(notification);
-            
+        // إذا كان الوقت 00:00:00 (منتصف الليل)
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+            // تأخير لمدة 5 ثوانٍ للتأكد من أن اليوم تغير بالفعل
             setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
+                const newDay = new Date();
+                const ramadanInfo = calculateRamadanStart(newDay);
+                
+                if (ramadanInfo.ramadanStarted) {
+                    const newRamadanDay = ramadanInfo.currentRamadanDay;
+                    
+                    // إذا تغير يوم رمضان
+                    if (newRamadanDay !== currentDay) {
+                        currentDay = newRamadanDay;
+                        currentTasbeehIndex = currentDay - 1;
+                        appState.currentDay = currentDay;
+                        
+                        // حفظ في localStorage
+                        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+                        
+                        // تحديث واجهة المستخدم
+                        updateUI();
+                        
+                        // إشعار بتغير اليوم
+                        showNotification(`اليوم ${currentDay} من رمضان`, "مبروك! يوم جديد مبارك في رمضان", "info");
+                        
+                        // إعادة تحميل بيانات اليوم
+                        loadTodayData();
+                    }
                 }
             }, 5000);
         }
+    }, 1000); // تحديث كل ثانية
+}
+
+// دالة تحميل بيانات اليوم
+function loadTodayData() {
+    // تحديث بيانات التسبيح
+    updateTasbeehSection();
+    
+    // تحديث بيانات القرآن
+    updateQuranSection();
+    
+    // تحديث بيانات المهام
+    updateTasksSection();
+    
+    // تحديث بيانات الأدعية
+    updateDuasSection();
+    
+    // تحديث بيانات الأحاديث
+    updateHadithsSection();
+    
+    // تحديث بيانات التحديات
+    updateChallengesSection();
+    
+    // تحديث بيانات أسماء الله الحسنى
+    updateAllahNamesSection();
+    
+    // تحديث بيانات الأذكار
+    updateAdhkarSection();
+    
+    // تحديث الصفحة الرئيسية
+    updateDashboard();
+}
+
+// دالة تحديث الصفحة الرئيسية
+function updateDashboard() {
+    // تحديث اليوم في العداد
+    document.getElementById('dayCounter').textContent = `اليوم ${currentDay} من رمضان`;
+    
+    // تحديث اسم اليوم من أسماء الله الحسنى
+    const todayNameIndex = currentDay - 1;
+    if (todayNameIndex < allahNames.length) {
+        document.getElementById('todaysName').textContent = allahNames[todayNameIndex].name;
+        document.getElementById('nameExplanation').textContent = allahNames[todayNameIndex].meaning;
+    }
+    
+    // تحديث التسبيح اليومي
+    const tasbeeh = tasbeehat[todayNameIndex] || tasbeehat[0];
+    document.getElementById('todayTasbeeh').textContent = `${tasbeeh.text} ${tasbeeh.count} مرة`;
+    
+    // تحديث تقدم التسبيح
+    const tasbeehProgress = appState.tasbeehCounts[todayNameIndex] || 0;
+    const tasbeehPercentage = Math.min(100, (tasbeehProgress / tasbeeh.count) * 100);
+    document.getElementById('tasbeehProgress').textContent = `${Math.round(tasbeehPercentage)}%`;
+    document.getElementById('tasbeehProgressBar').style.width = `${tasbeehPercentage}%`;
+    
+    // تحديث القرآن
+    document.getElementById('todayQuran').textContent = `الجزء ${currentDay}`;
+    const quranProgress = currentDay * (100/30);
+    document.getElementById('quranProgress').textContent = `${Math.round(quranProgress)}%`;
+    document.getElementById('quranProgressBar').style.width = `${quranProgress}%`;
+    
+    // تحديث المهمة اليومية
+    const taskIndex = (currentDay - 1) % dailyTasks.length;
+    document.getElementById('todayTask').textContent = dailyTasks[taskIndex];
+    document.getElementById('taskStatus').textContent = appState.tasksCompleted[todayNameIndex] ? "مكتملة" : "غير مكتملة";
+    
+    // تحديث الدعاء اليومي
+    const duaIndex = (currentDay - 1) % dailyDuas.length;
+    document.getElementById('todayDua').textContent = dailyDuas[duaIndex];
+  
+    
+    // تحديث التحدي اليومي
+    const challengeIndex = (currentDay - 1) % ramadanChallenges.length;
+    document.getElementById('todayChallenge').textContent = ramadanChallenges[challengeIndex];
+    document.getElementById('challengeStatus').textContent = appState.challengesCompleted[todayNameIndex] ? "مكتمل" : "قيد التنفيذ";
+    
+    // تحديث الحديث اليومي
+    const hadithIndex = (currentDay - 1) % dailyHadiths.length;
+    document.getElementById('todayHadith').textContent = dailyHadiths[hadithIndex].text;
+ 
+    
+    // تحديث الحفظ اليومي
+    document.getElementById('todayMemorization').textContent = `5 آيات من سورة البقرة`;
+    const memorizationProgress = currentDay * (100/30);
+    document.getElementById('memorizationProgress').textContent = `${Math.round(memorizationProgress)}%`;
+    document.getElementById('memorizationProgressBar').style.width = `${memorizationProgress}%`;
+     const readDuasCount = appState.duasCompleted.filter(Boolean).length;
+    const duasPercentage = Math.round((readDuasCount / dailyDuas.length) * 100);
+    document.getElementById('duaStatus').textContent = `${readDuasCount}/${dailyDuas.length} (${duasPercentage}%)`;
+    
+    const readHadithsCount = appState.hadithsCompleted.filter(Boolean).length;
+    const hadithsPercentage = Math.round((readHadithsCount / dailyHadiths.length) * 100);
+    document.getElementById('hadithStatus').textContent = `${readHadithsCount}/${dailyHadiths.length} (${hadithsPercentage}%)`;
+}
+
+    
+   
+// دالة عرض الإشعارات
+function showNotification(title, message, type = "info") {
+    const notifications = document.getElementById('notifications');
+    
+    // إنشاء الإشعار
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    let icon = "fa-info-circle";
+    if (type === "success") icon = "fa-check-circle";
+    if (type === "warning") icon = "fa-exclamation-circle";
+    if (type === "error") icon = "fa-times-circle";
+    
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <div class="notification-content">
+            <h4>${title}</h4>
+            <p>${message}</p>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // إضافة الإشعار
+    notifications.appendChild(notification);
+    
+    // إزالة الإشعار بعد 5 ثوانٍ
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// دالة التبديل بين الأقسام
+function showSection(sectionId) {
+    // إخفاء جميع الأقسام
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // إظهار القسم المطلوب
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.style.display = 'block';
+    }
+    
+    // تحديث القائمة الجانبية النشطة
+    const menuItems = document.querySelectorAll('.sidebar-menu a');
+    menuItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    const activeMenuItem = document.querySelector(`.sidebar-menu a[href="#${sectionId}"]`);
+    if (activeMenuItem) {
+        activeMenuItem.classList.add('active');
+    }
+    
+    // إغلاق القائمة الجانبية على الشاشات الصغيرة
+    if (window.innerWidth < 992) {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.remove('active');
+    }
+    
+    // تحديث بيانات القسم إذا لزم الأمر
+    if (sectionId === 'tasbeeh') {
+        updateTasbeehSection();
+    } else if (sectionId === 'quran') {
+        updateQuranSection();
+    } else if (sectionId === 'daily-tasks') {
+        updateTasksSection();
+    } else  if (sectionId === 'duas') {
+        updateDuasSection();
+    } else if (sectionId === 'hadith') {
+        updateHadithsSection();
+    
+    } else if (sectionId === 'challenges') {
+        updateChallengesSection();
+    } else if (sectionId === 'allah-names') {
+        updateAllahNamesSection();
+    } else if (sectionId === 'adhkar') {
+        updateAdhkarSection();
+    } else if (sectionId === 'prayer-times') {
+        loadPrayerTimesForDay();
+    }
+}
+
+// دالة تحديث قسم التسبيح
+function updateTasbeehSection() {
+    const todayIndex = currentDay - 1;
+    const tasbeeh = tasbeehat[todayIndex] || tasbeehat[0];
+    
+    // تحديث التسبيح الحالي
+    document.getElementById('currentTasbeeh').textContent = `${tasbeeh.text} - ${tasbeeh.count} مرة`;
+    
+    // تحديث العداد
+    const currentCount = appState.tasbeehCounts[todayIndex] || 0;
+    document.getElementById('counterDisplay').textContent = currentCount;
+    tasbeehCounter = currentCount;
+    currentTasbeehIndex = todayIndex;
+    
+    // تحديث قائمة التسبيحات
+    const tasbeehList = document.getElementById('tasbeehList');
+    tasbeehList.innerHTML = '';
+    
+    for (let i = 0; i < tasbeehat.length; i++) {
+        const item = tasbeehat[i];
+        const tasbeehItem = document.createElement('div');
+        tasbeehItem.className = `tasbeeh-item ${i === todayIndex ? 'active' : ''} ${i > todayIndex ? 'disabled' : ''}`;
         
-        // دالة التبديل بين الأقسام
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
+        // التحقق إذا تم إكمال التسبيح
+        const isCompleted = (appState.tasbeehCounts[i] || 0) >= item.count;
+        if (isCompleted) {
+            tasbeehItem.classList.add('completed');
+        }
+        
+        tasbeehItem.innerHTML = `
+            <div class="tasbeeh-checkbox ${i > todayIndex ? 'disabled' : ''}" onclick="toggleTasbeeh(${i})">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="tasbeeh-text">${item.text} - ${item.count} مرة</div>
+            <div class="tasbeeh-count">${appState.tasbeehCounts[i] || 0}/${item.count}</div>
+        `;
+        
+        tasbeehList.appendChild(tasbeehItem);
+    }
+}
+
+// دالة زيادة العداد
+function incrementCounter() {
+    const todayIndex = currentDay - 1;
+    const tasbeeh = tasbeehat[todayIndex];
+    
+    if (tasbeehCounter < tasbeeh.count) {
+        tasbeehCounter++;
+        document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        
+        // حفظ في الحالة
+        appState.tasbeehCounts[todayIndex] = tasbeehCounter;
+        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+        
+        // تحديث العرض
+        updateTasbeehSection();
+        
+        // تأثير بصري
+        if (tasbeehCounter % 10 === 0) {
+            createHeartAnimation();
+        }
+        
+        // إذا اكتمل العدد
+        if (tasbeehCounter >= tasbeeh.count) {
+            showNotification("مبروك!", "لقد أكملت تسبيح اليوم بنجاح", "success");
+        }
+    }
+}
+
+// دالة إنقاص العداد
+function decrementCounter() {
+    if (tasbeehCounter > 0) {
+        tasbeehCounter--;
+        document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        
+        // حفظ في الحالة
+        const todayIndex = currentDay - 1;
+        appState.tasbeehCounts[todayIndex] = tasbeehCounter;
+        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+        
+        // تحديث العرض
+        updateTasbeehSection();
+    }
+}
+
+// دالة إعادة تعيين العداد
+function resetCounter() {
+    if (confirm("هل تريد إعادة تعيين عداد التسبيح؟")) {
+        tasbeehCounter = 0;
+        document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        
+        // حفظ في الحالة
+        const todayIndex = currentDay - 1;
+        appState.tasbeehCounts[todayIndex] = tasbeehCounter;
+        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+        
+        // تحديث العرض
+        updateTasbeehSection();
+    }
+}
+
+// دالة تبديل حالة التسبيح
+function toggleTasbeeh(index) {
+    // يمكن فقط التحكم بتسبيح اليوم الحالي والأيام السابقة
+    if (index > currentDay - 1) {
+        showNotification("غير متاح", "لا يمكن تعديل تسبيحات الأيام القادمة", "warning");
+        return;
+    }
+    
+    const tasbeeh = tasbeehat[index];
+    const currentCount = appState.tasbeehCounts[index] || 0;
+    
+    // إذا كان العدد أقل من المطلوب، ضبطه على العدد المطلوب
+    if (currentCount < tasbeeh.count) {
+        appState.tasbeehCounts[index] = tasbeeh.count;
+        
+        // إذا كان هذا هو اليوم الحالي، تحديث العداد
+        if (index === currentDay - 1) {
+            tasbeehCounter = tasbeeh.count;
+            document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        }
+        
+        showNotification("تم!", `تم إكمال تسبيح اليوم ${index + 1}`, "success");
+    } else {
+        // إذا كان العدد مساوياً أو أكبر، إعادة تعيينه إلى 0
+        appState.tasbeehCounts[index] = 0;
+        
+        // إذا كان هذا هو اليوم الحالي، تحديث العداد
+        if (index === currentDay - 1) {
+            tasbeehCounter = 0;
+            document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        }
+        
+        showNotification("تم!", `تم إعادة تعيين تسبيح اليوم ${index + 1}`, "info");
+    }
+    
+    // حفظ في localStorage
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateTasbeehSection();
+    updateDashboard();
+}
+
+// دالة تحميل أوقات الصلاة
+function loadPrayerTimesForDay() {
+    const daySelect = document.getElementById('prayerDaySelect');
+    const selectedDay = parseInt(daySelect.value);
+    
+    // تحديث العنوان
+    document.getElementById('selectedDayTitle').textContent = getArabicNumber(selectedDay);
+    
+    // الحصول على أوقات الصلاة
+    const times = ramadanPrayerTimes[selectedDay] || ramadanPrayerTimes[1];
+    
+    // عرض أوقات الصلاة
+    const container = document.getElementById('prayerTimesContainer');
+    container.innerHTML = '';
+    
+    const prayers = ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء'];
+    
+    prayers.forEach(prayer => {
+        const prayerCard = document.createElement('div');
+        prayerCard.className = 'prayer-card';
+        
+        // التحقق إذا كانت هذه هي الصلاة الحالية (بناءً على الوقت)
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
+        // تحويل وقت الصلاة إلى دقائق
+        const [hours, minutes] = times[prayer].split(':').map(Number);
+        const prayerTimeInMinutes = hours * 60 + minutes;
+        
+        // إضافة فئة active إذا كانت هذه الصلاة هي التالية
+        let isActive = false;
+        if (prayer === 'المغرب') {
+            // المغرب هي أول صلاة بعد الإفطار
+            const maghribTime = times['المغرب'].split(':').map(Number);
+            const maghribMinutes = maghribTime[0] * 60 + maghribTime[1];
             
-            const activeSection = document.getElementById(sectionId);
-            if (activeSection) {
-                activeSection.style.display = 'block';
-            }
-            
-            const menuItems = document.querySelectorAll('.nav-menu a');
-            menuItems.forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            const activeMenuItem = document.querySelector(`.nav-menu a[href="#${sectionId}"]`);
-            if (activeMenuItem) {
-                activeMenuItem.classList.add('active');
-            }
-            
-            if (window.innerWidth < 768) {
-                const topNav = document.getElementById('topNav');
-                const navToggle = document.getElementById('navToggle');
-                
-                topNav.classList.remove('expanded');
-                navToggle.classList.remove('rotated');
-                navToggle.querySelector('i').className = 'fas fa-arrow-down';
-            }
-            
-            if (sectionId === 'tasbeeh') {
-                updateTasbeehSection();
-            } else if (sectionId === 'quran') {
-                updateQuranSection();
-            } else if (sectionId === 'daily-tasks') {
-                updateTasksSection();
-            } else if (sectionId === 'duas') {
-                updateDuasSection();
-            } else if (sectionId === 'hadith') {
-                updateHadithsSection();
-            } else if (sectionId === 'challenges') {
-                updateChallengesSection();
-            } else if (sectionId === 'allah-names') {
-                updateAllahNamesSection();
-            } else if (sectionId === 'adhkar') {
-                updateAdhkarSection();
-            } else if (sectionId === 'prayer-times') {
-                loadPrayerTimesForDay();
+            if (currentTime >= maghribMinutes && currentTime < maghribMinutes + 120) {
+                isActive = true;
             }
         }
         
-        // دالة تهيئة القائمة العلوية الجديدة
-        function initializeTopNav() {
-            const topNav = document.getElementById('topNav');
-            const navToggle = document.getElementById('navToggle');
-            const navMenu = document.getElementById('navMenu');
-            const scrollLeft = document.getElementById('scrollLeft');
-            const scrollRight = document.getElementById('scrollRight');
-            
-            // زر التوسيع/الطي
-            navToggle.addEventListener('click', () => {
-                topNav.classList.toggle('expanded');
-                navToggle.classList.toggle('rotated');
-                
-                const icon = navToggle.querySelector('i');
-                if (topNav.classList.contains('expanded')) {
-                    icon.className = 'fas fa-arrow-up';
-                } else {
-                    icon.className = 'fas fa-arrow-down';
-                }
-            });
-            
-            // أزرار التمرير
-            scrollLeft.addEventListener('click', () => {
-                navMenu.scrollBy({
-                    left: -200,
-                    behavior: 'smooth'
-                });
-            });
-            
-            scrollRight.addEventListener('click', () => {
-                navMenu.scrollBy({
-                    left: 200,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // إظهار/إخفاء أزرار التمرير
-            navMenu.addEventListener('scroll', () => {
-                const isAtStart = navMenu.scrollLeft === 0;
-                const isAtEnd = navMenu.scrollLeft + navMenu.clientWidth >= navMenu.scrollWidth;
-                
-                scrollLeft.style.opacity = isAtStart ? '0' : '0.9';
-                scrollRight.style.opacity = isAtEnd ? '0' : '0.9';
-            });
-            
-            updateScrollButtons();
-            window.addEventListener('resize', updateScrollButtons);
-            
-            function updateScrollButtons() {
-                const isScrollable = navMenu.scrollWidth > navMenu.clientWidth;
-                scrollLeft.style.display = isScrollable ? 'flex' : 'none';
-                scrollRight.style.display = isScrollable ? 'flex' : 'none';
-            }
+        if (isActive) {
+            prayerCard.classList.add('active');
         }
         
-        // دالة تحديث قسم التسبيح
-        function updateTasbeehSection() {
-            const todayIndex = currentDay - 1;
-            const tasbeeh = tasbeehat[todayIndex] || tasbeehat[0];
-            
-            document.getElementById('currentTasbeeh').textContent = `${tasbeeh.text} - ${tasbeeh.count} مرة`;
-            
-            const currentCount = appState.tasbeehCounts[todayIndex] || 0;
-            document.getElementById('counterDisplay').textContent = currentCount;
-            tasbeehCounter = currentCount;
-            currentTasbeehIndex = todayIndex;
-            
-            const tasbeehList = document.getElementById('tasbeehList');
-            tasbeehList.innerHTML = '';
-            
-            for (let i = 0; i < tasbeehat.length; i++) {
-                const item = tasbeehat[i];
-                const tasbeehItem = document.createElement('div');
-                tasbeehItem.className = `tasbeeh-item ${i === todayIndex ? 'active' : ''} ${i > todayIndex ? 'disabled' : ''}`;
-                
-                const isCompleted = (appState.tasbeehCounts[i] || 0) >= item.count;
-                if (isCompleted) {
-                    tasbeehItem.classList.add('completed');
-                }
-                
-                tasbeehItem.innerHTML = `
-                    <div class="tasbeeh-checkbox ${i > todayIndex ? 'disabled' : ''}" onclick="toggleTasbeeh(${i})">
+        prayerCard.innerHTML = `
+            <div class="prayer-name">${prayer}</div>
+            <div class="prayer-time">${times[prayer]}</div>
+        `;
+        
+        container.appendChild(prayerCard);
+    });
+}
+
+// دالة الحصول على الرقم العربي
+function getArabicNumber(num) {
+    const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return num.toString().split('').map(digit => arabicNumbers[digit]).join('');
+}
+
+// دالة توليد خطة القرآن
+function generateQuranPlan() {
+    const khatmaCount = parseInt(document.getElementById('khatmaCount').value);
+    const khatmaType = document.getElementById('khatmaType').value;
+    
+    // إنشاء خطة القرآن
+    const plan = [];
+    
+    if (khatmaType === 'sequential') {
+        // ختمات متتابعة
+        for (let day = 1; day <= 30; day++) {
+            const parts = [];
+            for (let k = 0; k < khatmaCount; k++) {
+                const partNumber = ((day - 1) + (k * 30)) % 30 + 1;
+                parts.push(`الجزء ${partNumber}`);
+            }
+            plan.push({
+                day: day,
+                parts: parts,
+                completed: appState.quranPartsCompleted[day - 1] || false
+            });
+        }
+    } else {
+        // ختمات متوازية
+        const partsPerDay = Math.ceil((30 * khatmaCount) / 30);
+        
+        let partCounter = 1;
+        for (let day = 1; day <= 30; day++) {
+            const parts = [];
+            for (let i = 0; i < partsPerDay && partCounter <= 30 * khatmaCount; i++) {
+                const partNumber = ((partCounter - 1) % 30) + 1;
+                const khatmaNumber = Math.floor((partCounter - 1) / 30) + 1;
+                parts.push(`الجزء ${partNumber} (الختمة ${khatmaNumber})`);
+                partCounter++;
+            }
+            plan.push({
+                day: day,
+                parts: parts,
+                completed: appState.quranPartsCompleted[day - 1] || false
+            });
+        }
+    }
+    
+    // حفظ الخطة
+    appState.quranPlan = {
+        khatmaCount: khatmaCount,
+        khatmaType: khatmaType,
+        plan: plan
+    };
+    
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // عرض الخطة
+    displayQuranPlan();
+}
+
+// دالة عرض خطة القرآن
+function displayQuranPlan() {
+    const planDetails = document.getElementById('quranPlanDetails');
+    const planTable = document.getElementById('quranPlanTable');
+    
+    if (!appState.quranPlan) {
+        planDetails.style.display = 'none';
+        return;
+    }
+    
+    planDetails.style.display = 'block';
+    planTable.innerHTML = '';
+    
+    const plan = appState.quranPlan.plan;
+    let completedParts = 0;
+    let totalParts = 0;
+    
+    // حساب التقدم العام
+    plan.forEach((dayPlan, index) => {
+        totalParts += dayPlan.parts.length;
+        if (dayPlan.completed) {
+            completedParts += dayPlan.parts.length;
+        }
+    });
+    
+    const overallProgress = totalParts > 0 ? (completedParts / totalParts) * 100 : 0;
+    document.getElementById('overallQuranProgress').textContent = `${Math.round(overallProgress)}%`;
+    document.getElementById('overallQuranProgressBar').style.width = `${overallProgress}%`;
+    
+    // عرض الخطة اليومية
+    plan.forEach((dayPlan, index) => {
+        const row = document.createElement('tr');
+        
+        // تنسيق اليوم الحالي
+        const isToday = (index + 1) === currentDay;
+        if (isToday) {
+            row.style.backgroundColor = 'var(--light-purple)';
+        }
+        
+        // حالة الإكمال
+        const statusText = dayPlan.completed ? 'مكتمل' : (index + 1 < currentDay ? 'متأخر' : 'لم يبدأ');
+        const statusClass = dayPlan.completed ? 'completed' : (index + 1 < currentDay ? 'missed' : '');
+        
+        // عدد الأجزاء المكتملة في هذا اليوم
+        const dayProgress = dayPlan.completed ? 100 : 0;
+        
+        row.innerHTML = `
+            <td>${getArabicNumber(dayPlan.day)}${isToday ? ' (اليوم)' : ''}</td>
+            <td>${dayPlan.parts.join('، ')}</td>
+            <td>
+                <div class="progress-cell">
+                    <div class="progress-checkbox ${statusClass}" onclick="toggleQuranDay(${index})">
                         <i class="fas fa-check"></i>
                     </div>
-                    <div class="tasbeeh-text">${item.text} - ${item.count} مرة</div>
-                    <div class="tasbeeh-count">${appState.tasbeehCounts[i] || 0}/${item.count}</div>
-                `;
-                
-                tasbeehList.appendChild(tasbeehItem);
+                    <span>${statusText}</span>
+                </div>
+            </td>
+            <td>
+                <div class="progress-cell">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${dayProgress}%"></div>
+                    </div>
+                    <span>${dayProgress}%</span>
+                </div>
+            </td>
+        `;
+        
+        planTable.appendChild(row);
+    });
+}
+
+// دالة تبديل حالة يوم القرآن
+function toggleQuranDay(index) {
+    if (!appState.quranPlan) return;
+    
+    // يمكن فقط التحكم بالأيام حتى اليوم الحالي
+    if (index + 1 > currentDay) {
+        showNotification("غير متاح", "لا يمكن تعديل أيام القرآن القادمة", "warning");
+        return;
+    }
+    
+    appState.quranPlan.plan[index].completed = !appState.quranPlan.plan[index].completed;
+    appState.quranPartsCompleted[index] = appState.quranPlan.plan[index].completed;
+    
+    // حفظ في localStorage
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    displayQuranPlan();
+    updateDashboard();
+    
+    // إشعار
+    const status = appState.quranPlan.plan[index].completed ? 'مكتمل' : 'غير مكتمل';
+    showNotification("تم!", `تم تحديث حالة اليوم ${index + 1} إلى ${status}`, "success");
+}
+
+// دالة تحديث قسم القرآن
+function updateQuranSection() {
+    // إذا كانت هناك خطة، عرضها
+    if (appState.quranPlan) {
+        displayQuranPlan();
+    }
+}
+
+// دالة توليد خطة الحفظ
+function generateMemorizationPlan() {
+    const surahName = document.getElementById('surahName').value;
+    const totalVerses = parseInt(document.getElementById('totalVerses').value);
+    
+    if (!surahName || !totalVerses || totalVerses <= 0) {
+        showNotification("خطأ", "الرجاء إدخال اسم السورة وعدد آياتها", "error");
+        return;
+    }
+    
+    // حساب عدد الآيات لكل يوم
+    const versesPerDay = Math.ceil(totalVerses / 30);
+    
+    // إنشاء خطة الحفظ
+    const plan = [];
+    let remainingVerses = totalVerses;
+    let startVerse = 1;
+    
+    for (let day = 1; day <= 30; day++) {
+        const dayVerses = Math.min(versesPerDay, remainingVerses);
+        const endVerse = startVerse + dayVerses - 1;
+        
+        plan.push({
+            day: day,
+            surah: surahName,
+            verses: dayVerses === 1 ? `آية ${startVerse}` : `الآيات ${startVerse}-${endVerse}`,
+            completed: appState.memorizationCompleted[day - 1] || false
+        });
+        
+        startVerse += dayVerses;
+        remainingVerses -= dayVerses;
+        
+        if (remainingVerses <= 0) break;
+    }
+    
+    // إذا بقي أيام بدون آيات
+    for (let day = plan.length + 1; day <= 30; day++) {
+        plan.push({
+            day: day,
+            surah: surahName,
+            verses: "مراجعة",
+            completed: false
+        });
+    }
+    
+    // حفظ الخطة
+    appState.memorizationPlan = {
+        surahName: surahName,
+        totalVerses: totalVerses,
+        plan: plan
+    };
+    
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // عرض الخطة
+    displayMemorizationPlan();
+}
+
+// دالة عرض خطة الحفظ
+function displayMemorizationPlan() {
+    const planDetails = document.getElementById('memorizationPlanDetails');
+    const planTable = document.getElementById('memorizationPlanTable');
+    
+    if (!appState.memorizationPlan) {
+        planDetails.style.display = 'none';
+        return;
+    }
+    
+    planDetails.style.display = 'block';
+    planTable.innerHTML = '';
+    
+    const plan = appState.memorizationPlan.plan;
+    let completedDays = 0;
+    
+    // حساب التقدم العام
+    plan.forEach((dayPlan, index) => {
+        if (dayPlan.completed) {
+            completedDays++;
+        }
+    });
+    
+    const overallProgress = (completedDays / 30) * 100;
+    document.getElementById('overallMemorizationProgress').textContent = `${Math.round(overallProgress)}%`;
+    document.getElementById('overallMemorizationProgressBar').style.width = `${overallProgress}%`;
+    
+    // عرض الخطة اليومية
+    plan.forEach((dayPlan, index) => {
+        const row = document.createElement('tr');
+        
+        // تنسيق اليوم الحالي
+        const isToday = (index + 1) === currentDay;
+        if (isToday) {
+            row.style.backgroundColor = 'var(--light-purple)';
+        }
+        
+        // حالة الإكمال
+        const statusText = dayPlan.completed ? 'مكتمل' : (index + 1 < currentDay ? 'متأخر' : 'لم يبدأ');
+        const statusClass = dayPlan.completed ? 'completed' : (index + 1 < currentDay ? 'missed' : '');
+        
+        // التقدم
+        const dayProgress = dayPlan.completed ? 100 : 0;
+        
+        row.innerHTML = `
+            <td>${getArabicNumber(dayPlan.day)}${isToday ? ' (اليوم)' : ''}</td>
+            <td>${dayPlan.verses} - ${dayPlan.surah}</td>
+            <td>
+                <div class="progress-cell">
+                    <div class="progress-checkbox ${statusClass}" onclick="toggleMemorizationDay(${index})">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span>${statusText}</span>
+                </div>
+            </td>
+            <td>
+                <div class="progress-cell">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${dayProgress}%"></div>
+                    </div>
+                    <span>${dayProgress}%</span>
+                </div>
+            </td>
+        `;
+        
+        planTable.appendChild(row);
+    });
+}
+
+// دالة تبديل حالة يوم الحفظ
+function toggleMemorizationDay(index) {
+    if (!appState.memorizationPlan) return;
+    
+    // يمكن فقط التحكم بالأيام حتى اليوم الحالي
+    if (index + 1 > currentDay) {
+        showNotification("غير متاح", "لا يمكن تعديل أيام الحفظ القادمة", "warning");
+        return;
+    }
+    
+    appState.memorizationPlan.plan[index].completed = !appState.memorizationPlan.plan[index].completed;
+    appState.memorizationCompleted[index] = appState.memorizationPlan.plan[index].completed;
+    
+    // حفظ في localStorage
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    displayMemorizationPlan();
+    updateDashboard();
+    
+    // إشعار
+    const status = appState.memorizationPlan.plan[index].completed ? 'مكتمل' : 'غير مكتمل';
+    showNotification("تم!", `تم تحديث حالة اليوم ${index + 1} إلى ${status}`, "success");
+}
+
+// دالة تحديث قسم الحفظ
+function updateMemorizationSection() {
+    // إذا كانت هناك خطة، عرضها
+    if (appState.memorizationPlan) {
+        displayMemorizationPlan();
+    }
+}
+
+// دالة تحديث قسم المهام
+function updateTasksSection() {
+    const todayIndex = currentDay - 1;
+    const taskIndex = todayIndex % dailyTasks.length;
+    
+    // تحديث المهمة الحالية
+    document.getElementById('currentTaskTitle').textContent = dailyTasks[taskIndex];
+    document.getElementById('currentTaskDescription').textContent = getTaskDescription(dailyTasks[taskIndex]);
+    document.getElementById('currentTaskStatus').textContent = appState.tasksCompleted[todayIndex] ? 'مكتملة' : 'غير مكتملة';
+    
+    // تحديث زر إكمال المهمة
+    const completeBtn = document.getElementById('completeTaskBtn');
+    if (appState.tasksCompleted[todayIndex]) {
+        completeBtn.textContent = 'تم إنجاز المهمة';
+        completeBtn.disabled = true;
+        completeBtn.style.backgroundColor = '#ccc';
+    } else {
+        completeBtn.textContent = 'تم إنجاز المهمة';
+        completeBtn.disabled = false;
+        completeBtn.style.backgroundColor = '';
+    }
+    
+    // تحديث قائمة المهام
+    const tasksList = document.getElementById('tasksList');
+    tasksList.innerHTML = '';
+    
+    // عرض فقط مهام اليوم الحالي (للتحديث يمكن توسيعها لاحقاً)
+    const taskItem = document.createElement('div');
+    taskItem.className = `task-item ${appState.tasksCompleted[todayIndex] ? 'completed' : ''}`;
+    
+    taskItem.innerHTML = `
+        <div class="task-checkbox ${appState.tasksCompleted[todayIndex] ? 'completed' : ''}" onclick="toggleTask(${todayIndex})">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="task-content">
+            <h4>${dailyTasks[taskIndex]}</h4>
+            <p>${getTaskDescription(dailyTasks[taskIndex])}</p>
+        </div>
+    `;
+    
+    tasksList.appendChild(taskItem);
+}
+
+// دالة الحصول على وصف المهمة
+function getTaskDescription(task) {
+    const descriptions = {
+        "صلاة الضحى": "صلاة الضحى سنة مؤكدة، تبدأ من بعد طلوع الشمس بربع ساعة وتنتهي قبل صلاة الظهر بربع ساعة، وأقلها ركعتان وأكثرها ثماني ركعات.",
+        "صلاة التهجد": "صلاة التهجد هي الصلاة في جوف الليل بعد النوم، وهي من أفضل الصلوات بعد الفريضة.",
+        "صلاة ركعتين لوجه الله": "ركعتان تقربانك إلى الله تعالى وترفعان درجاتك في الجنة.",
+        "صلاة عشرين ركعة للتراويح": "صلاة التراويح هي صلاة القيام في رمضان، وتصلى بعد صلاة العشاء.",
+        "صلاة قضاء يوم كامل": "قضاء الصلوات الفائتة من يوم كامل.",
+        "ذكر زيادة عن الذكر المطلوب ١٠٠ مرة": "زيادة في الأجر والتقرب إلى الله تعالى.",
+        "قراءة اذكاء الصباح والمساء": "حفظ نفسك بحفظ الله تعالى بقراءة أذكار الصباح والمساء.",
+        "الالتزام بالصلاة ع وقتها": "الصلاة في أول وقتها من أحب الأعمال إلى الله.",
+        "الالتزام بالرواتب (سنن الصلوات)": "السنن الرواتب تكميل للفرائض ورفع للدرجات.",
+        "الترديد مع الاذان والدعاء معه": "الترديد خلف المؤذن والدعاء بين الأذان والإقامة من مواطن إجابة الدعاء.",
+        "الصدقة": "الصدقة تطفئ الخطيئة كما يطفئ الماء النار.",
+        "تذكير شخص اخر بسنة": "الدال على الخير كفاعله.",
+        "قراءة حديث وحفظه وتطبيقه": "العلم لا ينفع إلا بالعمل.",
+        "قراءة تفسير آية": "فهم كتاب الله تعالى طريق الهداية.",
+        "سماع درس ديني": "طلب العلم فريضة على كل مسلم."
+    };
+    
+    return descriptions[task] || "مهمة يومية لزيادة الأجر والتقرب إلى الله تعالى في شهر رمضان المبارك.";
+}
+
+// دالة إكمال المهمة
+function completeTask() {
+    const todayIndex = currentDay - 1;
+    
+    if (appState.tasksCompleted[todayIndex]) {
+        showNotification("المهمة مكتملة", "لقد أكملت هذه المهمة بالفعل", "info");
+        return;
+    }
+    
+    appState.tasksCompleted[todayIndex] = true;
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateTasksSection();
+    updateDashboard();
+    
+    // تأثير بصري
+    createHeartAnimation();
+    
+    // إشعار
+    showNotification("مبروك!", "لقد أكملت المهمة اليومية بنجاح", "success");
+}
+
+// دالة تبديل حالة المهمة
+function toggleTask(index) {
+    // يمكن فقط التحكم بمهام اليوم الحالي والأيام السابقة
+    if (index > currentDay - 1) {
+        showNotification("غير متاح", "لا يمكن تعديل مهام الأيام القادمة", "warning");
+        return;
+    }
+    
+    appState.tasksCompleted[index] = !appState.tasksCompleted[index];
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateTasksSection();
+    updateDashboard();
+    
+    // إشعار
+    const status = appState.tasksCompleted[index] ? 'مكتملة' : 'غير مكتملة';
+    showNotification("تم!", `تم تحديث حالة المهمة إلى ${status}`, "success");
+}
+
+
+function updateDuasSection() {
+    const todayIndex = currentDay - 1;
+    
+    document.getElementById('currentDuaTitle').textContent = `دعاء اليوم ${todayIndex + 1}`;
+    document.getElementById('currentDuaText').textContent = dailyDuas[todayIndex] || dailyDuas[0];
+    document.getElementById('currentDuaStatus').textContent = 'متاح للقراءة';
+    
+    const completeBtn = document.getElementById('completeDuaBtn');
+    completeBtn.textContent = 'قراءة الدعاء';
+    completeBtn.disabled = false;
+    completeBtn.style.backgroundColor = '';
+    
+    const duasGrid = document.getElementById('duasGrid');
+    duasGrid.innerHTML = '';
+    
+    for (let i = 0; i < dailyDuas.length; i++) {
+        const duaCard = document.createElement('div');
+        duaCard.className = 'dua-card';
+        
+        if (i === todayIndex) duaCard.classList.add('active');
+        if (appState.duasCompleted[i]) duaCard.classList.add('completed');
+        
+        duaCard.innerHTML = `
+            <div class="card-badge">${i + 1}</div>
+            <div class="dua-day">
+                <i class="fas fa-hands-praying"></i>
+                دعاء اليوم ${i + 1}
+            </div>
+            <div class="dua-text">${dailyDuas[i]}</div>
+            <div class="dua-status ${appState.duasCompleted[i] ? 'completed' : ''}">
+                ${appState.duasCompleted[i] ? '<i class="fas fa-check"></i> مقروء' : 'اضغط للقراءة'}
+            </div>
+        `;
+        
+        duaCard.addEventListener('click', () => toggleDua(i));
+        duasGrid.appendChild(duaCard);
+    }
+}
+
+function updateHadithsSection() {
+    const todayIndex = currentDay - 1;
+    const hadith = dailyHadiths[todayIndex] || dailyHadiths[0];
+    
+    document.getElementById('currentHadithTitle').textContent = hadith.title || `حديث اليوم ${todayIndex + 1}`;
+    document.getElementById('currentHadithText').textContent = hadith.text;
+    document.getElementById('currentHadithStatus').textContent = 'متاح للقراءة';
+    
+    const completeBtn = document.getElementById('completeHadithBtn');
+    completeBtn.textContent = 'قراءة الحديث';
+    completeBtn.disabled = false;
+    completeBtn.style.backgroundColor = '';
+    
+    const hadithsGrid = document.getElementById('hadithsGrid');
+    hadithsGrid.innerHTML = '';
+    
+    for (let i = 0; i < dailyHadiths.length; i++) {
+        const hadith = dailyHadiths[i];
+        const hadithCard = document.createElement('div');
+        hadithCard.className = 'hadith-card';
+        
+        if (i === todayIndex) hadithCard.classList.add('active');
+        if (appState.hadithsCompleted[i]) hadithCard.classList.add('completed');
+        
+        hadithCard.innerHTML = `
+            <div class="card-badge">${i + 1}</div>
+            <div class="hadith-day">
+                <i class="fas fa-book"></i>
+                ${hadith.title || `حديث اليوم ${i + 1}`}
+            </div>
+            <div class="hadith-text">${hadith.text.substring(0, 120)}${hadith.text.length > 120 ? '...' : ''}</div>
+            <div class="hadith-status ${appState.hadithsCompleted[i] ? 'completed' : ''}">
+                ${appState.hadithsCompleted[i] ? '<i class="fas fa-check"></i> مقروء' : 'اضغط للقراءة'}
+            </div>
+        `;
+        
+        hadithCard.addEventListener('click', () => toggleHadith(i));
+        hadithsGrid.appendChild(hadithCard);
+    }
+}
+// دالة إكمال الدعاء
+function completeDua() {
+    const todayIndex = currentDay - 1;
+    
+    if (appState.duasCompleted[todayIndex]) {
+        showNotification("الدعاء مقروء", "لقد قرأت هذا الدعاء بالفعل", "info");
+        return;
+    }
+    
+    appState.duasCompleted[todayIndex] = true;
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateDuasSection();
+    updateDashboard();
+    
+    // تأثير بصري
+    createHeartAnimation();
+    
+    // إشعار
+    showNotification("مبروك!", "لقد أكملت قراءة الدعاء اليومي", "success");
+}
+
+// دالة تبديل حالة الدعاء
+function toggleDua(index) {
+    appState.duasCompleted[index] = !appState.duasCompleted[index];
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    updateDuasSection();
+    updateDashboard();
+    
+    const status = appState.duasCompleted[index] ? 'مقروء' : 'لم يُقرأ';
+    showNotification("تم!", `تم تحديث دعاء اليوم ${index + 1} إلى ${status}`, "success");
+}
+
+function toggleHadith(index) {
+    appState.hadithsCompleted[index] = !appState.hadithsCompleted[index];
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    updateHadithsSection();
+    updateDashboard();
+    
+    const status = appState.hadithsCompleted[index] ? 'مقروء' : 'لم يُقرأ';
+    showNotification("تم!", `تم تحديث حديث اليوم ${index + 1} إلى ${status}`, "success");
+}
+
+// دالة تحديث قسم التحديات
+function updateChallengesSection() {
+    const todayIndex = currentDay - 1;
+    const challengeIndex = todayIndex % ramadanChallenges.length;
+    
+    // تحديث التحدي الحالي
+    document.getElementById('currentChallengeTitle').textContent = ramadanChallenges[challengeIndex];
+    document.getElementById('currentChallengeDescription').textContent = getChallengeDescription(ramadanChallenges[challengeIndex]);
+    document.getElementById('currentChallengeStatus').textContent = appState.challengesCompleted[todayIndex] ? 'مكتمل' : 'قيد التنفيذ';
+    
+    // تحديث زر إكمال التحدي
+    const completeBtn = document.getElementById('completeChallengeBtn');
+    if (appState.challengesCompleted[todayIndex]) {
+        completeBtn.textContent = 'تم إنجاز التحدي';
+        completeBtn.disabled = true;
+        completeBtn.style.backgroundColor = '#ccc';
+    } else {
+        completeBtn.textContent = 'تم إنجاز التحدي';
+        completeBtn.disabled = false;
+        completeBtn.style.backgroundColor = '';
+    }
+    
+    // تحديث قائمة التحديات
+    const challengesList = document.getElementById('challengesList');
+    challengesList.innerHTML = '';
+    
+    for (let i = 0; i < ramadanChallenges.length; i++) {
+        const challengeItem = document.createElement('div');
+        challengeItem.className = `challenge-card ${appState.challengesCompleted[i] ? 'completed' : ''} ${i > todayIndex ? 'disabled' : ''}`;
+        
+        challengeItem.innerHTML = `
+            <div class="challenge-header">
+                <div class="challenge-checkbox ${i > todayIndex ? 'disabled' : ''}" onclick="toggleChallenge(${i})">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h4>${ramadanChallenges[i]}</h4>
+            </div>
+            <p>${getChallengeDescription(ramadanChallenges[i])}</p>
+        `;
+        
+        challengesList.appendChild(challengeItem);
+    }
+}
+
+// دالة الحصول على وصف التحدي
+function getChallengeDescription(challenge) {
+    const descriptions = {
+        "عدم مشاهدة المسلسلات": "تحدي اليوم هو الامتناع عن مشاهدة المسلسلات التلفزيونية طول اليوم وتخصيص هذا الوقت للعبادة وقراءة القرآن.",
+        "محاسبة شخص لا تحبه أمام الناس": "التحدي هو التحلي بالأخلاق الإسلامية ومحاسبة النفس قبل محاسبة الآخرين.",
+        "الابتعاد عن الغيبة والنميمة": "حفظ اللسان من الغيبة والنميمة والتي تعد من كبائر الذنوب.",
+        "عدم استخدام الموبايل بكثرة": "التقليل من استخدام الهاتف المحمول وتخصيص الوقت للعبادة والطاعة.",
+        "قراءة سورة الملك قبل النوم": "سورة الملك تشفع لصاحبها وتنجيه من عذاب القبر.",
+        "مساعدة في تحضير مائدة الفطور والسحور": "المساعدة في تحضير الطعام صدقة وأجر عظيم.",
+        "صلة الرحم": "صلة الرحم تزيد في العمر وتوسع في الرزق.",
+        "السيطرة على الغضب": "كظم الغيظ من صفات المتقين وأهل الجنة.",
+        "كلمة حلوة لشخص تصنع على وجهه الابتسامة": "الكلمة الطيبة صدقة وتدخل السرور على قلوب الناس.",
+        "صلاة ركعتين بعد كل صلاة فرض": "السنن الرواتب ترفع الدرجات وتكمل الفرائض."
+    };
+    
+    return descriptions[challenge] || "تحدي يومي لتعزيز التقوى والسلوك الإسلامي خلال شهر رمضان المبارك.";
+}
+
+// دالة إكمال التحدي
+function completeChallenge() {
+    const todayIndex = currentDay - 1;
+    
+    if (appState.challengesCompleted[todayIndex]) {
+        showNotification("التحدي مكتمل", "لقد أكملت هذا التحدي بالفعل", "info");
+        return;
+    }
+    
+    appState.challengesCompleted[todayIndex] = true;
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateChallengesSection();
+    updateDashboard();
+    
+    // تأثير بصري
+    createHeartAnimation();
+    
+    // إشعار
+    showNotification("مبروك!", "لقد أكملت التحدي اليومي بنجاح", "success");
+}
+
+// دالة تبديل حالة التحدي
+function toggleChallenge(index) {
+    // يمكن فقط التحكم بتحديات اليوم الحالي والأيام السابقة
+    if (index > currentDay - 1) {
+        showNotification("غير متاح", "لا يمكن تعديل تحديات الأيام القادمة", "warning");
+        return;
+    }
+    
+    appState.challengesCompleted[index] = !appState.challengesCompleted[index];
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updateChallengesSection();
+    updateDashboard();
+    
+    // إشعار
+    const status = appState.challengesCompleted[index] ? 'مكتمل' : 'قيد التنفيذ';
+    showNotification("تم!", `تم تحديث حالة التحدي إلى ${status}`, "success");
+}
+
+// دالة تحديث قسم أسماء الله الحسنى
+function updateAllahNamesSection() {
+    const namesGrid = document.getElementById('allahNamesGrid');
+    namesGrid.innerHTML = '';
+    
+    const todayIndex = currentDay - 1;
+    
+    for (let i = 0; i < allahNames.length; i++) {
+        const name = allahNames[i];
+        const nameCard = document.createElement('div');
+        nameCard.className = `name-card ${i === todayIndex ? 'active' : ''}`;
+        
+        nameCard.innerHTML = `
+            <div class="name-arabic">${name.name}</div>
+            <div class="name-meaning">${name.meaning}</div>
+            <div class="mt-2">${i === todayIndex ? '<strong>اسم اليوم</strong>' : `اليوم ${i + 1}`}</div>
+        `;
+        
+        namesGrid.appendChild(nameCard);
+    }
+}
+
+// دالة تبديل تبويبات الأذكار
+function showAdhkarTab(tabName) {
+    // تحديث التبويبات النشطة
+    const tabs = document.querySelectorAll('.adhkar-tab');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const activeTab = document.querySelector(`.adhkar-tab[onclick="showAdhkarTab('${tabName}')"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+    
+    // إخفاء جميع محتويات الأذكار
+    const contents = document.querySelectorAll('.adhkar-content');
+    contents.forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // إظهار المحتوى المطلوب
+    const activeContent = document.getElementById(`${tabName}Adhkar`);
+    if (activeContent) {
+        activeContent.classList.add('active');
+    }
+}
+
+// دالة تحديث قسم الأذكار
+function updateAdhkarSection() {
+    // تحديث أذكار الصباح
+    const morningList = document.getElementById('morningAdhkarList');
+    morningList.innerHTML = '';
+    
+    morningAdhkar.forEach((dhikr, index) => {
+        const dhikrItem = document.createElement('div');
+        dhikrItem.className = 'dhikr-item';
+        
+        dhikrItem.innerHTML = `
+            <div class="dhikr-text">${dhikr.text}</div>
+            <div class="dhikr-count">${dhikr.count} مرة</div>
+        `;
+        
+        morningList.appendChild(dhikrItem);
+    });
+    
+    // تحديث أذكار المساء
+    const eveningList = document.getElementById('eveningAdhkarList');
+    eveningList.innerHTML = '';
+    
+    eveningAdhkar.forEach((dhikr, index) => {
+        const dhikrItem = document.createElement('div');
+        dhikrItem.className = 'dhikr-item';
+        
+        dhikrItem.innerHTML = `
+            <div class="dhikr-text">${dhikr.text}</div>
+            <div class="dhikr-count">${dhikr.count} مرة</div>
+        `;
+        
+        eveningList.appendChild(dhikrItem);
+    });
+    
+    // تحديث أذكار النوم
+    const sleepList = document.getElementById('sleepAdhkarList');
+    sleepList.innerHTML = '';
+    
+    sleepAdhkar.forEach((dhikr, index) => {
+        const dhikrItem = document.createElement('div');
+        dhikrItem.className = 'dhikr-item';
+        
+        dhikrItem.innerHTML = `
+            <div class="dhikr-text">${dhikr.text}</div>
+            <div class="dhikr-count">${dhikr.count} مرة</div>
+        `;
+        
+        sleepList.appendChild(dhikrItem);
+    });
+}
+
+// دالة إضافة دعاء شخصي
+function addPersonalDua() {
+    const input = document.getElementById('newDuaInput');
+    const duaText = input.value.trim();
+    
+    if (!duaText) {
+        showNotification("خطأ", "الرجاء كتابة دعاء", "error");
+        return;
+    }
+    
+    // إضافة الدعاء إلى القائمة
+    appState.personalDuas.push({
+        text: duaText,
+        completed: false,
+        date: new Date().toLocaleDateString('ar-SA')
+    });
+    
+    // حفظ في localStorage
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // مسح حقل الإدخال
+    input.value = '';
+    
+    // تحديث العرض
+    updatePersonalDuasSection();
+    
+    // إشعار
+    showNotification("تم!", "تم إضافة الدعاء الشخصي", "success");
+}
+
+// دالة تحديث قسم الأدعية الشخصية
+function updatePersonalDuasSection() {
+    const duasList = document.getElementById('personalDuasList');
+    duasList.innerHTML = '';
+    
+    appState.personalDuas.forEach((dua, index) => {
+        const duaItem = document.createElement('div');
+        duaItem.className = `dua-item ${dua.completed ? 'completed' : ''}`;
+        
+        duaItem.innerHTML = `
+            <div class="dua-content">
+                <p>${dua.text}</p>
+                <small>${dua.date}</small>
+            </div>
+            <div class="dua-checkbox" onclick="togglePersonalDua(${index})">
+                <i class="fas fa-check"></i>
+            </div>
+        `;
+        
+        duasList.appendChild(duaItem);
+    });
+}
+
+// دالة تبديل حالة الدعاء الشخصي
+function togglePersonalDua(index) {
+    appState.personalDuas[index].completed = !appState.personalDuas[index].completed;
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // تحديث العرض
+    updatePersonalDuasSection();
+    
+    // إشعار
+    const status = appState.personalDuas[index].completed ? 'مستجاب' : 'قيد الدعاء';
+    showNotification("تم!", `تم تحديث حالة الدعاء إلى ${status}`, "success");
+}
+
+// دالة إنشاء تأثير القلوب
+function createHeartAnimation() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.top = Math.random() * 100 + 'vh';
+    
+    document.body.appendChild(heart);
+    
+    // إزالة القلب بعد انتهاء الحركة
+    setTimeout(() => {
+        heart.remove();
+    }, 2000);
+}
+
+// دالة تحديث واجهة المستخدم
+function updateUI() {
+    // تحديث اليوم في القائمة
+    document.getElementById('dayCounter').textContent = `اليوم ${currentDay} من رمضان`;
+    
+    // تحديث بيانات اليوم في نموذج الإعداد (إذا كان مرئياً)
+    const ramadanDaySelect = document.getElementById('ramadanDay');
+    if (ramadanDaySelect) {
+        ramadanDaySelect.value = currentDay;
+        updateRamadanDayNote();
+    }
+    
+    // تحديث بيانات اليوم في قسم الصلاة
+    const prayerDaySelect = document.getElementById('prayerDaySelect');
+    if (prayerDaySelect) {
+        prayerDaySelect.value = currentDay;
+    }
+    
+    // تحديث الصفحة الرئيسية
+    updateDashboard();
+    
+    // تحديث جميع الأقسام الأخرى
+    loadTodayData();
+}
+
+// دالة حفظ إعدادات المستخدم
+function saveUserSettings() {
+    const userNameInput = document.getElementById('userName');
+    const ramadanDayInput = document.getElementById('ramadanDay');
+    
+    const name = userNameInput.value.trim();
+    const day = parseInt(ramadanDayInput.value);
+    
+    if (!name) {
+        showNotification("خطأ", "الرجاء إدخال اسمك", "error");
+        return;
+    }
+    
+    if (day < 1 || day > 30) {
+        showNotification("خطأ", "الرجاء اختيار يوم صحيح من رمضان", "error");
+        return;
+    }
+    
+    // حفظ البيانات
+    userName = name;
+    currentDay = day;
+    currentTasbeehIndex = currentDay - 1;
+    
+    appState.userName = name;
+    appState.currentDay = currentDay;
+    
+    localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+    
+    // إخفاء نموذج الإعداد
+    document.getElementById('userSetupModal').style.display = 'none';
+    
+    // إظهار المحتوى الرئيسي
+    document.getElementById('mainContent').style.display = 'block';
+    
+    // تحديث واجهة المستخدم
+    updateUI();
+    
+    // إشعار ترحيبي
+    showNotification(`مرحباً ${userName}`, `نتمنى لك صوماً مقبولاً وإفطاراً شهياً في اليوم ${currentDay} من رمضان`, "success");
+    
+    // عرض إشعار باليوم الجديد إذا كان هذا هو اليوم الأول من الاستخدام
+    const isFirstTime = !localStorage.getItem('ramadanAppFirstTime');
+    if (isFirstTime) {
+        localStorage.setItem('ramadanAppFirstTime', 'true');
+        showNotification("أهلاً بك!", "يمكنك التنقل بين الأقسام من القائمة الجانبية. كل قسم يحتوي على مهام يومية لشهر رمضان", "info");
+    }
+}
+
+// دالة تهيئة التطبيق
+function initializeApp() {
+    // تحميل الحالة المحفوظة
+    const savedState = localStorage.getItem('ramadanAppState');
+    if (savedState) {
+        try {
+            appState = JSON.parse(savedState);
+            userName = appState.userName || "";
+            currentDay = appState.currentDay || 1;
+            currentTasbeehIndex = currentDay - 1;
+            
+            // التحقق من صحة البيانات
+            if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
+                appState.tasbeehCounts = Array(30).fill(0);
+            }
+            if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
+                appState.tasbeehCompleted = Array(30).fill(false);
+            }
+            if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
+                appState.tasksCompleted = Array(30).fill(false);
+            }
+            if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
+                appState.duasCompleted = Array(30).fill(false);
+            }
+            if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
+                appState.hadithsCompleted = Array(30).fill(false);
+            }
+            if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
+                appState.challengesCompleted = Array(30).fill(false);
+            }
+            if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
+                appState.quranPartsCompleted = Array(30).fill(false);
+            }
+            if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
+                appState.memorizationCompleted = Array(30).fill(false);
+            }
+            if (!appState.personalDuas) {
+                appState.personalDuas = [];
+            }
+        } catch (e) {
+            console.error("خطأ في تحميل الحالة:", e);
+        }
+    }
+    // إضافة تفاعل الماوس واللمس للعداد البنفسجي
+const counterDisplay = document.getElementById('counterDisplay');
+if (counterDisplay) {
+    // لللمس (الأجهزة المحمولة)
+    let touchStartY = 0;
+    let touchStartValue = 0;
+    
+    counterDisplay.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartValue = tasbeehCounter;
+        e.preventDefault();
+    });
+    
+    counterDisplay.addEventListener('touchmove', (e) => {
+        const touchY = e.touches[0].clientY;
+        const deltaY = touchStartY - touchY;
+        const increment = Math.round(deltaY / 10);
+        
+        const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, touchStartValue + increment));
+        
+        if (newValue !== tasbeehCounter) {
+            tasbeehCounter = newValue;
+            counterDisplay.textContent = tasbeehCounter;
+            
+            appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
+            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+            
+            if (tasbeehCounter % 10 === 0) {
+                createHeartAnimation();
             }
         }
         
-        // دالة زيادة العداد
-        function incrementCounter() {
-            const todayIndex = currentDay - 1;
-            const tasbeeh = tasbeehat[todayIndex];
+        e.preventDefault();
+    });
+    
+    // للنقر (Click)
+    counterDisplay.addEventListener('click', () => {
+        incrementCounter();
+    });
+    
+    // للسحب بالماوس (Mouse Drag)
+    let mouseStartY = 0;
+    let mouseStartValue = 0;
+    let isDragging = false;
+    
+    counterDisplay.addEventListener('mousedown', (e) => {
+        mouseStartY = e.clientY;
+        mouseStartValue = tasbeehCounter;
+        isDragging = true;
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const mouseY = e.clientY;
+        const deltaY = mouseStartY - mouseY;
+        const increment = Math.round(deltaY / 10);
+        
+        const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, mouseStartValue + increment));
+        
+        if (newValue !== tasbeehCounter) {
+            tasbeehCounter = newValue;
+            counterDisplay.textContent = tasbeehCounter;
             
-            if (tasbeehCounter < tasbeeh.count) {
-                tasbeehCounter++;
-                document.getElementById('counterDisplay').textContent = tasbeehCounter;
+            appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
+            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+            
+            if (tasbeehCounter % 10 === 0) {
+                createHeartAnimation();
+            }
+        }
+    });
+    
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+}
+    
+    // التحقق من تغيير اليوم الحقيقي
+    checkDayChange();
+    
+    // إذا كان هناك مستخدم محفوظ، إظهار المحتوى الرئيسي مباشرة
+    if (userName) {
+        document.getElementById('userSetupModal').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        updateUI();
+        
+        // إعداد معلومات رمضان في حال عرض نموذج الإعداد لاحقاً
+        setupRamadanDateInfo();
+        updateRamadanDayNote();
+    } else {
+        // إظهار نموذج الإعداد
+        document.getElementById('userSetupModal').style.display = 'block';
+        document.getElementById('mainContent').style.display = 'none';
+        
+        // إعداد معلومات رمضان
+        setupRamadanDateInfo();
+        updateRamadanDayNote();
+    }
+    
+    // إعداد القائمة الجانبية للشاشات الصغيرة
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+    
+    // إغلاق القائمة عند النقر خارجها على الشاشات الصغيرة
+    document.addEventListener('click', (event) => {
+        if (window.innerWidth < 992) {
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+    
+    // إعداد الساعة الحقيقية
+    setupRealTimeClock();
+    
+    // إعداد التحديث التلقائي للتاريخ
+    setupAutoDateUpdate();
+    
+    // إعداد حساسية اللمس لعداد التسبيح
+    
+        
+        counterDisplay.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchY;
+            const increment = Math.round(deltaY / 10);
+            
+            const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, touchStartValue + increment));
+            
+            if (newValue !== tasbeehCounter) {
+                tasbeehCounter = newValue;
+                counterDisplay.textContent = tasbeehCounter;
                 
-                appState.tasbeehCounts[todayIndex] = tasbeehCounter;
+                // تحديث الحالة
+                appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
                 localStorage.setItem('ramadanAppState', JSON.stringify(appState));
                 
-                updateTasbeehSection();
-                
+                // تأثيرات صوتية بصرية
                 if (tasbeehCounter % 10 === 0) {
                     createHeartAnimation();
                 }
-                
-                if (tasbeehCounter >= tasbeeh.count) {
-                    showNotification("مبروك!", "لقد أكملت تسبيح اليوم بنجاح", "success");
-                }
             }
-        }
+            
+            e.preventDefault();
+        });
         
-        // دالة إنقاص العداد
-        function decrementCounter() {
-            if (tasbeehCounter > 0) {
-                tasbeehCounter--;
-                document.getElementById('counterDisplay').textContent = tasbeehCounter;
+        // النقر لزيادة العداد
+        counterDisplay.addEventListener('click', () => {
+            incrementCounter();
+        });
+    }
+    
+    // إضافة دعم السحب والفأرة لأجهزة الكمبيوتر
+    if (counterDisplay) {
+        let mouseStartY = 0;
+        let mouseStartValue = 0;
+        let isDragging = false;
+        
+        counterDisplay.addEventListener('mousedown', (e) => {
+            mouseStartY = e.clientY;
+            mouseStartValue = tasbeehCounter;
+            isDragging = true;
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const mouseY = e.clientY;
+            const deltaY = mouseStartY - mouseY;
+            const increment = Math.round(deltaY / 10);
+            
+            const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, mouseStartValue + increment));
+            
+            if (newValue !== tasbeehCounter) {
+                tasbeehCounter = newValue;
+                counterDisplay.textContent = tasbeehCounter;
                 
-                const todayIndex = currentDay - 1;
-                appState.tasbeehCounts[todayIndex] = tasbeehCounter;
+                // تحديث الحالة
+                appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
                 localStorage.setItem('ramadanAppState', JSON.stringify(appState));
                 
-                updateTasbeehSection();
-            }
-        }
-        
-        // دالة إعادة تعيين العداد
-        function resetCounter() {
-            if (confirm("هل تريد إعادة تعيين عداد التسبيح؟")) {
-                tasbeehCounter = 0;
-                document.getElementById('counterDisplay').textContent = tasbeehCounter;
-                
-                const todayIndex = currentDay - 1;
-                appState.tasbeehCounts[todayIndex] = tasbeehCounter;
-                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                
-                updateTasbeehSection();
-            }
-        }
-        
-        // دالة تبديل حالة التسبيح
-        function toggleTasbeeh(index) {
-            if (index > currentDay - 1) {
-                showNotification("غير متاح", "لا يمكن تعديل تسبيحات الأيام القادمة", "warning");
-                return;
-            }
-            
-            const tasbeeh = tasbeehat[index];
-            const currentCount = appState.tasbeehCounts[index] || 0;
-            
-            if (currentCount < tasbeeh.count) {
-                appState.tasbeehCounts[index] = tasbeeh.count;
-                
-                if (index === currentDay - 1) {
-                    tasbeehCounter = tasbeeh.count;
-                    document.getElementById('counterDisplay').textContent = tasbeehCounter;
-                }
-                
-                showNotification("تم!", `تم إكمال تسبيح اليوم ${index + 1}`, "success");
-            } else {
-                appState.tasbeehCounts[index] = 0;
-                
-                if (index === currentDay - 1) {
-                    tasbeehCounter = 0;
-                    document.getElementById('counterDisplay').textContent = tasbeehCounter;
-                }
-                
-                showNotification("تم!", `تم إعادة تعيين تسبيح اليوم ${index + 1}`, "info");
-            }
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateTasbeehSection();
-            updateDashboard();
-        }
-        
-        // دالة تحميل أوقات الصلاة
-        function loadPrayerTimesForDay() {
-            const daySelect = document.getElementById('prayerDaySelect');
-            const selectedDay = parseInt(daySelect.value);
-            
-            document.getElementById('selectedDayTitle').textContent = getArabicNumber(selectedDay);
-            
-            const times = ramadanPrayerTimes[selectedDay] || ramadanPrayerTimes[1];
-            
-            const container = document.getElementById('prayerTimesContainer');
-            container.innerHTML = '';
-            
-            const prayers = ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء'];
-            
-            prayers.forEach(prayer => {
-                const prayerCard = document.createElement('div');
-                prayerCard.className = 'prayer-card';
-                
-                const now = new Date();
-                const currentTime = now.getHours() * 60 + now.getMinutes();
-                
-                const [hours, minutes] = times[prayer].split(':').map(Number);
-                const prayerTimeInMinutes = hours * 60 + minutes;
-                
-                let isActive = false;
-                if (prayer === 'المغرب') {
-                    const maghribTime = times['المغرب'].split(':').map(Number);
-                    const maghribMinutes = maghribTime[0] * 60 + maghribTime[1];
-                    
-                    if (currentTime >= maghribMinutes && currentTime < maghribMinutes + 120) {
-                        isActive = true;
-                    }
-                }
-                
-                if (isActive) {
-                    prayerCard.classList.add('active');
-                }
-                
-                prayerCard.innerHTML = `
-                    <div class="prayer-name">${prayer}</div>
-                    <div class="prayer-time">${times[prayer]}</div>
-                `;
-                
-                container.appendChild(prayerCard);
-            });
-        }
-        
-        // دالة الحصول على الرقم العربي
-        function getArabicNumber(num) {
-            const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-            return num.toString().split('').map(digit => arabicNumbers[digit]).join('');
-        }
-        
-        // دالة توليد خطة القرآن
-        function generateQuranPlan() {
-            const khatmaCount = parseInt(document.getElementById('khatmaCount').value);
-            const khatmaType = document.getElementById('khatmaType').value;
-            
-            const plan = [];
-            
-            if (khatmaType === 'sequential') {
-                for (let day = 1; day <= 30; day++) {
-                    const parts = [];
-                    for (let k = 0; k < khatmaCount; k++) {
-                        const partNumber = ((day - 1) + (k * 30)) % 30 + 1;
-                        parts.push(`الجزء ${partNumber}`);
-                    }
-                    plan.push({
-                        day: day,
-                        parts: parts,
-                        completed: appState.quranPartsCompleted[day - 1] || false
-                    });
-                }
-            } else {
-                const partsPerDay = Math.ceil((30 * khatmaCount) / 30);
-                
-                let partCounter = 1;
-                for (let day = 1; day <= 30; day++) {
-                    const parts = [];
-                    for (let i = 0; i < partsPerDay && partCounter <= 30 * khatmaCount; i++) {
-                        const partNumber = ((partCounter - 1) % 30) + 1;
-                        const khatmaNumber = Math.floor((partCounter - 1) / 30) + 1;
-                        parts.push(`الجزء ${partNumber} (الختمة ${khatmaNumber})`);
-                        partCounter++;
-                    }
-                    plan.push({
-                        day: day,
-                        parts: parts,
-                        completed: appState.quranPartsCompleted[day - 1] || false
-                    });
+                // تأثيرات صوتية بصرية
+                if (tasbeehCounter % 10 === 0) {
+                    createHeartAnimation();
                 }
             }
-            
-            appState.quranPlan = {
-                khatmaCount: khatmaCount,
-                khatmaType: khatmaType,
-                plan: plan
-            };
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            displayQuranPlan();
-        }
+        });
         
-        // دالة عرض خطة القرآن
-        function displayQuranPlan() {
-            const planDetails = document.getElementById('quranPlanDetails');
-            const planTable = document.getElementById('quranPlanTable');
-            
-            if (!appState.quranPlan) {
-                planDetails.style.display = 'none';
-                return;
-            }
-            
-            planDetails.style.display = 'block';
-            planTable.innerHTML = '';
-            
-            const plan = appState.quranPlan.plan;
-            let completedParts = 0;
-            let totalParts = 0;
-            
-            plan.forEach((dayPlan, index) => {
-                totalParts += dayPlan.parts.length;
-                if (dayPlan.completed) {
-                    completedParts += dayPlan.parts.length;
-                }
-            });
-            
-            const overallProgress = totalParts > 0 ? (completedParts / totalParts) * 100 : 0;
-            document.getElementById('overallQuranProgress').textContent = `${Math.round(overallProgress)}%`;
-            document.getElementById('overallQuranProgressBar').style.width = `${overallProgress}%`;
-            
-            plan.forEach((dayPlan, index) => {
-                const row = document.createElement('tr');
-                
-                const isToday = (index + 1) === currentDay;
-                if (isToday) {
-                    row.style.backgroundColor = 'var(--light-purple)';
-                }
-                
-                const statusText = dayPlan.completed ? 'مكتمل' : (index + 1 < currentDay ? 'متأخر' : 'لم يبدأ');
-                const statusClass = dayPlan.completed ? 'completed' : (index + 1 < currentDay ? 'missed' : '');
-                
-                const dayProgress = dayPlan.completed ? 100 : 0;
-                
-                row.innerHTML = `
-                    <td>${getArabicNumber(dayPlan.day)}${isToday ? ' (اليوم)' : ''}</td>
-                    <td>${dayPlan.parts.join('، ')}</td>
-                    <td>
-                        <div class="progress-cell">
-                            <div class="progress-checkbox ${statusClass}" onclick="toggleQuranDay(${index})">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <span>${statusText}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="progress-cell">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${dayProgress}%"></div>
-                            </div>
-                            <span>${dayProgress}%</span>
-                        </div>
-                    </td>
-                `;
-                
-                planTable.appendChild(row);
-            });
-        }
-        
-        // دالة تبديل حالة يوم القرآن
-        function toggleQuranDay(index) {
-            if (!appState.quranPlan) return;
-            
-            if (index + 1 > currentDay) {
-                showNotification("غير متاح", "لا يمكن تعديل أيام القرآن القادمة", "warning");
-                return;
-            }
-            
-            appState.quranPlan.plan[index].completed = !appState.quranPlan.plan[index].completed;
-            appState.quranPartsCompleted[index] = appState.quranPlan.plan[index].completed;
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            displayQuranPlan();
-            updateDashboard();
-            
-            const status = appState.quranPlan.plan[index].completed ? 'مكتمل' : 'غير مكتمل';
-            showNotification("تم!", `تم تحديث حالة اليوم ${index + 1} إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم القرآن
-        function updateQuranSection() {
-            if (appState.quranPlan) {
-                displayQuranPlan();
-            }
-        }
-        
-        // دالة توليد خطة الحفظ
-        function generateMemorizationPlan() {
-            const surahName = document.getElementById('surahName').value;
-            const totalVerses = parseInt(document.getElementById('totalVerses').value);
-            
-            if (!surahName || !totalVerses || totalVerses <= 0) {
-                showNotification("خطأ", "الرجاء إدخال اسم السورة وعدد آياتها", "error");
-                return;
-            }
-            
-            const versesPerDay = Math.ceil(totalVerses / 30);
-            
-            const plan = [];
-            let remainingVerses = totalVerses;
-            let startVerse = 1;
-            
-            for (let day = 1; day <= 30; day++) {
-                const dayVerses = Math.min(versesPerDay, remainingVerses);
-                const endVerse = startVerse + dayVerses - 1;
-                
-                plan.push({
-                    day: day,
-                    surah: surahName,
-                    verses: dayVerses === 1 ? `آية ${startVerse}` : `الآيات ${startVerse}-${endVerse}`,
-                    completed: appState.memorizationCompleted[day - 1] || false
-                });
-                
-                startVerse += dayVerses;
-                remainingVerses -= dayVerses;
-                
-                if (remainingVerses <= 0) break;
-            }
-            
-            for (let day = plan.length + 1; day <= 30; day++) {
-                plan.push({
-                    day: day,
-                    surah: surahName,
-                    verses: "مراجعة",
-                    completed: false
-                });
-            }
-            
-            appState.memorizationPlan = {
-                surahName: surahName,
-                totalVerses: totalVerses,
-                plan: plan
-            };
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            displayMemorizationPlan();
-        }
-        
-        // دالة عرض خطة الحفظ
-        function displayMemorizationPlan() {
-            const planDetails = document.getElementById('memorizationPlanDetails');
-            const planTable = document.getElementById('memorizationPlanTable');
-            
-            if (!appState.memorizationPlan) {
-                planDetails.style.display = 'none';
-                return;
-            }
-            
-            planDetails.style.display = 'block';
-            planTable.innerHTML = '';
-            
-            const plan = appState.memorizationPlan.plan;
-            let completedDays = 0;
-            
-            plan.forEach((dayPlan, index) => {
-                if (dayPlan.completed) {
-                    completedDays++;
-                }
-            });
-            
-            const overallProgress = (completedDays / 30) * 100;
-            document.getElementById('overallMemorizationProgress').textContent = `${Math.round(overallProgress)}%`;
-            document.getElementById('overallMemorizationProgressBar').style.width = `${overallProgress}%`;
-            
-            plan.forEach((dayPlan, index) => {
-                const row = document.createElement('tr');
-                
-                const isToday = (index + 1) === currentDay;
-                if (isToday) {
-                    row.style.backgroundColor = 'var(--light-purple)';
-                }
-                
-                const statusText = dayPlan.completed ? 'مكتمل' : (index + 1 < currentDay ? 'متأخر' : 'لم يبدأ');
-                const statusClass = dayPlan.completed ? 'completed' : (index + 1 < currentDay ? 'missed' : '');
-                
-                const dayProgress = dayPlan.completed ? 100 : 0;
-                
-                row.innerHTML = `
-                    <td>${getArabicNumber(dayPlan.day)}${isToday ? ' (اليوم)' : ''}</td>
-                    <td>${dayPlan.verses} - ${dayPlan.surah}</td>
-                    <td>
-                        <div class="progress-cell">
-                            <div class="progress-checkbox ${statusClass}" onclick="toggleMemorizationDay(${index})">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <span>${statusText}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="progress-cell">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${dayProgress}%"></div>
-                            </div>
-                            <span>${dayProgress}%</span>
-                        </div>
-                    </td>
-                `;
-                
-                planTable.appendChild(row);
-            });
-        }
-        
-        // دالة تبديل حالة يوم الحفظ
-        function toggleMemorizationDay(index) {
-            if (!appState.memorizationPlan) return;
-            
-            if (index + 1 > currentDay) {
-                showNotification("غير متاح", "لا يمكن تعديل أيام الحفظ القادمة", "warning");
-                return;
-            }
-            
-            appState.memorizationPlan.plan[index].completed = !appState.memorizationPlan.plan[index].completed;
-            appState.memorizationCompleted[index] = appState.memorizationPlan.plan[index].completed;
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            displayMemorizationPlan();
-            updateDashboard();
-            
-            const status = appState.memorizationPlan.plan[index].completed ? 'مكتمل' : 'غير مكتمل';
-            showNotification("تم!", `تم تحديث حالة اليوم ${index + 1} إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم الحفظ
-        function updateMemorizationSection() {
-            if (appState.memorizationPlan) {
-                displayMemorizationPlan();
-            }
-        }
-        
-        // دالة تحديث قسم المهام
-        function updateTasksSection() {
-            const todayIndex = currentDay - 1;
-            const taskIndex = todayIndex % dailyTasks.length;
-            
-            document.getElementById('currentTaskTitle').textContent = dailyTasks[taskIndex];
-            document.getElementById('currentTaskDescription').textContent = getTaskDescription(dailyTasks[taskIndex]);
-            document.getElementById('currentTaskStatus').textContent = appState.tasksCompleted[todayIndex] ? 'مكتملة' : 'غير مكتملة';
-            
-            const completeBtn = document.getElementById('completeTaskBtn');
-            if (appState.tasksCompleted[todayIndex]) {
-                completeBtn.textContent = 'تم إنجاز المهمة';
-                completeBtn.disabled = true;
-                completeBtn.style.backgroundColor = '#ccc';
-            } else {
-                completeBtn.textContent = 'تم إنجاز المهمة';
-                completeBtn.disabled = false;
-                completeBtn.style.backgroundColor = '';
-            }
-            
-            const tasksList = document.getElementById('tasksList');
-            tasksList.innerHTML = '';
-            
-            const taskItem = document.createElement('div');
-            taskItem.className = `task-item ${appState.tasksCompleted[todayIndex] ? 'completed' : ''}`;
-            
-            taskItem.innerHTML = `
-                <div class="task-checkbox ${appState.tasksCompleted[todayIndex] ? 'completed' : ''}" onclick="toggleTask(${todayIndex})">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="task-content">
-                    <h4>${dailyTasks[taskIndex]}</h4>
-                    <p>${getTaskDescription(dailyTasks[taskIndex])}</p>
-                </div>
-            `;
-            
-            tasksList.appendChild(taskItem);
-        }
-        
-        // دالة الحصول على وصف المهمة
-        function getTaskDescription(task) {
-            const descriptions = {
-                "صلاة الضحى": "صلاة الضحى سنة مؤكدة، تبدأ من بعد طلوع الشمس بربع ساعة وتنتهي قبل صلاة الظهر بربع ساعة، وأقلها ركعتان وأكثرها ثماني ركعات.",
-                "صلاة التهجد": "صلاة التهجد هي الصلاة في جوف الليل بعد النوم، وهي من أفضل الصلوات بعد الفريضة.",
-                "صلاة ركعتين لوجه الله": "ركعتان تقربانك إلى الله تعالى وترفعان درجاتك في الجنة.",
-                "صلاة عشرين ركعة للتراويح": "صلاة التراويح هي صلاة القيام في رمضان، وتصلى بعد صلاة العشاء.",
-                "صلاة قضاء يوم كامل": "قضاء الصلوات الفائتة من يوم كامل.",
-                "ذكر زيادة عن الذكر المطلوب ١٠٠ مرة": "زيادة في الأجر والتقرب إلى الله تعالى.",
-                "قراءة اذكاء الصباح والمساء": "حفظ نفسك بحفظ الله تعالى بقراءة أذكار الصباح والمساء.",
-                "الالتزام بالصلاة ع وقتها": "الصلاة في أول وقتها من أحب الأعمال إلى الله.",
-                "الالتزام بالرواتب (سنن الصلوات)": "السنن الرواتب تكميل للفرائض ورفع للدرجات.",
-                "الترديد مع الاذان والدعاء معه": "الترديد خلف المؤذن والدعاء بين الأذان والإقامة من مواطن إجابة الدعاء.",
-                "الصدقة": "الصدقة تطفئ الخطيئة كما يطفئ الماء النار.",
-                "تذكير شخص اخر بسنة": "الدال على الخير كفاعله.",
-                "قراءة حديث وحفظه وتطبيقه": "العلم لا ينفع إلا بالعمل.",
-                "قراءة تفسير آية": "فهم كتاب الله تعالى طريق الهداية.",
-                "سماع درس ديني": "طلب العلم فريضة على كل مسلم."
-            };
-            
-            return descriptions[task] || "مهمة يومية لزيادة الأجر والتقرب إلى الله تعالى في شهر رمضان المبارك.";
-        }
-        
-        // دالة إكمال المهمة
-        function completeTask() {
-            const todayIndex = currentDay - 1;
-            
-            if (appState.tasksCompleted[todayIndex]) {
-                showNotification("المهمة مكتملة", "لقد أكملت هذه المهمة بالفعل", "info");
-                return;
-            }
-            
-            appState.tasksCompleted[todayIndex] = true;
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateTasksSection();
-            updateDashboard();
-            
-            createHeartAnimation();
-            
-            showNotification("مبروك!", "لقد أكملت المهمة اليومية بنجاح", "success");
-        }
-        
-        // دالة تبديل حالة المهمة
-        function toggleTask(index) {
-            if (index > currentDay - 1) {
-                showNotification("غير متاح", "لا يمكن تعديل مهام الأيام القادمة", "warning");
-                return;
-            }
-            
-            appState.tasksCompleted[index] = !appState.tasksCompleted[index];
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateTasksSection();
-            updateDashboard();
-            
-            const status = appState.tasksCompleted[index] ? 'مكتملة' : 'غير مكتملة';
-            showNotification("تم!", `تم تحديث حالة المهمة إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم الأدعية
-        function updateDuasSection() {
-            const todayIndex = currentDay - 1;
-            
-            document.getElementById('currentDuaTitle').textContent = `دعاء اليوم ${todayIndex + 1}`;
-            document.getElementById('currentDuaText').textContent = dailyDuas[todayIndex] || dailyDuas[0];
-            document.getElementById('currentDuaStatus').textContent = 'متاح للقراءة';
-            
-            const completeBtn = document.getElementById('completeDuaBtn');
-            completeBtn.textContent = 'قراءة الدعاء';
-            completeBtn.disabled = false;
-            completeBtn.style.backgroundColor = '';
-            
-            const duasGrid = document.getElementById('duasGrid');
-            duasGrid.innerHTML = '';
-            
-            for (let i = 0; i < dailyDuas.length; i++) {
-                const duaCard = document.createElement('div');
-                duaCard.className = 'dua-card';
-                
-                if (i === todayIndex) duaCard.classList.add('active');
-                if (appState.duasCompleted[i]) duaCard.classList.add('completed');
-                
-                duaCard.innerHTML = `
-                    <div class="card-badge">${i + 1}</div>
-                    <div class="dua-day">
-                        <i class="fas fa-hands-praying"></i>
-                        دعاء اليوم ${i + 1}
-                    </div>
-                    <div class="dua-text">${dailyDuas[i]}</div>
-                    <div class="dua-status ${appState.duasCompleted[i] ? 'completed' : ''}">
-                        ${appState.duasCompleted[i] ? '<i class="fas fa-check"></i> مقروء' : 'اضغط للقراءة'}
-                    </div>
-                `;
-                
-                duaCard.addEventListener('click', () => toggleDua(i));
-                duasGrid.appendChild(duaCard);
-            }
-        }
-        
-        // دالة إكمال الدعاء
-        function completeDua() {
-            const todayIndex = currentDay - 1;
-            
-            if (!appState.duasCompleted[todayIndex]) {
-                appState.duasCompleted[todayIndex] = true;
-                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                
-                updateDuasSection();
-                
-                createHeartAnimation();
-                
-                showNotification("أحسنت!", "لقد قرأت دعاء اليوم", "success");
-            } else {
-                showNotification("مقروء مسبقاً", "لقد قرأت هذا الدعاء بالفعل", "info");
-            }
-        }
-        
-        // دالة تبديل حالة الدعاء
-        function toggleDua(index) {
-            appState.duasCompleted[index] = !appState.duasCompleted[index];
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateDuasSection();
-            updateDashboard();
-            
-            const status = appState.duasCompleted[index] ? 'مقروء' : 'لم يُقرأ';
-            showNotification("تم!", `تم تحديث دعاء اليوم ${index + 1} إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم الأحاديث
-        function updateHadithsSection() {
-            const todayIndex = currentDay - 1;
-            const hadith = dailyHadiths[todayIndex] || dailyHadiths[0];
-            
-            document.getElementById('currentHadithTitle').textContent = hadith.title || `حديث اليوم ${todayIndex + 1}`;
-            document.getElementById('currentHadithText').textContent = hadith.text;
-            document.getElementById('currentHadithStatus').textContent = 'متاح للقراءة';
-            
-            const completeBtn = document.getElementById('completeHadithBtn');
-            completeBtn.textContent = 'قراءة الحديث';
-            completeBtn.disabled = false;
-            completeBtn.style.backgroundColor = '';
-            
-            const hadithsGrid = document.getElementById('hadithsGrid');
-            hadithsGrid.innerHTML = '';
-            
-            for (let i = 0; i < dailyHadiths.length; i++) {
-                const hadith = dailyHadiths[i];
-                const hadithCard = document.createElement('div');
-                hadithCard.className = 'hadith-card';
-                
-                if (i === todayIndex) hadithCard.classList.add('active');
-                if (appState.hadithsCompleted[i]) hadithCard.classList.add('completed');
-                
-                hadithCard.innerHTML = `
-                    <div class="card-badge">${i + 1}</div>
-                    <div class="hadith-day">
-                        <i class="fas fa-book"></i>
-                        ${hadith.title || `حديث اليوم ${i + 1}`}
-                    </div>
-                    <div class="hadith-text">${hadith.text.substring(0, 120)}${hadith.text.length > 120 ? '...' : ''}</div>
-                    <div class="hadith-status ${appState.hadithsCompleted[i] ? 'completed' : ''}">
-                        ${appState.hadithsCompleted[i] ? '<i class="fas fa-check"></i> مقروء' : 'اضغط للقراءة'}
-                    </div>
-                `;
-                
-                hadithCard.addEventListener('click', () => toggleHadith(i));
-                hadithsGrid.appendChild(hadithCard);
-            }
-        }
-        
-        // دالة إكمال الحديث
-        function completeHadith() {
-            const todayIndex = currentDay - 1;
-            
-            if (!appState.hadithsCompleted[todayIndex]) {
-                appState.hadithsCompleted[todayIndex] = true;
-                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                
-                updateHadithsSection();
-                
-                createHeartAnimation();
-                
-                showNotification("أحسنت!", "لقد قرأت حديث اليوم", "success");
-            } else {
-                showNotification("مقروء مسبقاً", "لقد قرأت هذا الحديث بالفعل", "info");
-            }
-        }
-        
-        // دالة تبديل حالة الحديث
-        function toggleHadith(index) {
-            appState.hadithsCompleted[index] = !appState.hadithsCompleted[index];
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateHadithsSection();
-            updateDashboard();
-            
-            const status = appState.hadithsCompleted[index] ? 'مقروء' : 'لم يُقرأ';
-            showNotification("تم!", `تم تحديث حديث اليوم ${index + 1} إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم التحديات
-        function updateChallengesSection() {
-            const todayIndex = currentDay - 1;
-            const challengeIndex = todayIndex % ramadanChallenges.length;
-            
-            document.getElementById('currentChallengeTitle').textContent = ramadanChallenges[challengeIndex];
-            document.getElementById('currentChallengeDescription').textContent = getChallengeDescription(ramadanChallenges[challengeIndex]);
-            document.getElementById('currentChallengeStatus').textContent = appState.challengesCompleted[todayIndex] ? 'مكتمل' : 'قيد التنفيذ';
-            
-            const completeBtn = document.getElementById('completeChallengeBtn');
-            if (appState.challengesCompleted[todayIndex]) {
-                completeBtn.textContent = 'تم إنجاز التحدي';
-                completeBtn.disabled = true;
-                completeBtn.style.backgroundColor = '#ccc';
-            } else {
-                completeBtn.textContent = 'تم إنجاز التحدي';
-                completeBtn.disabled = false;
-                completeBtn.style.backgroundColor = '';
-            }
-            
-            const challengesList = document.getElementById('challengesList');
-            challengesList.innerHTML = '';
-            
-            for (let i = 0; i < ramadanChallenges.length; i++) {
-                const challengeItem = document.createElement('div');
-                challengeItem.className = `challenge-card ${appState.challengesCompleted[i] ? 'completed' : ''} ${i > todayIndex ? 'disabled' : ''}`;
-                
-                challengeItem.innerHTML = `
-                    <div class="challenge-header">
-                        <div class="challenge-checkbox ${i > todayIndex ? 'disabled' : ''}" onclick="toggleChallenge(${i})">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h4>${ramadanChallenges[i]}</h4>
-                    </div>
-                    <p>${getChallengeDescription(ramadanChallenges[i])}</p>
-                `;
-                
-                challengesList.appendChild(challengeItem);
-            }
-        }
-        
-        // دالة الحصول على وصف التحدي
-        function getChallengeDescription(challenge) {
-            const descriptions = {
-                "عدم مشاهدة المسلسلات": "تحدي اليوم هو الامتناع عن مشاهدة المسلسلات التلفزيونية طول اليوم وتخصيص هذا الوقت للعبادة وقراءة القرآن.",
-                "محاسبة شخص لا تحبه أمام الناس": "التحدي هو التحلي بالأخلاق الإسلامية ومحاسبة النفس قبل محاسبة الآخرين.",
-                "الابتعاد عن الغيبة والنميمة": "حفظ اللسان من الغيبة والنميمة والتي تعد من كبائر الذنوب.",
-                "عدم استخدام الموبايل بكثرة": "التقليل من استخدام الهاتف المحمول وتخصيص الوقت للعبادة والطاعة.",
-                "قراءة سورة الملك قبل النوم": "سورة الملك تشفع لصاحبها وتنجيه من عذاب القبر.",
-                "مساعدة في تحضير مائدة الفطور والسحور": "المساعدة في تحضير الطعام صدقة وأجر عظيم.",
-                "صلة الرحم": "صلة الرحم تزيد في العمر وتوسع في الرزق.",
-                "السيطرة على الغضب": "كظم الغيظ من صفات المتقين وأهل الجنة.",
-                "كلمة حلوة لشخص تصنع على وجهه الابتسامة": "الكلمة الطيبة صدقة وتدخل السرور على قلوب الناس.",
-                "صلاة ركعتين بعد كل صلاة فرض": "السنن الرواتب ترفع الدرجات وتكمل الفرائض."
-            };
-            
-            return descriptions[challenge] || "تحدي يومي لتعزيز التقوى والسلوك الإسلامي خلال شهر رمضان المبارك.";
-        }
-        
-        // دالة إكمال التحدي
-        function completeChallenge() {
-            const todayIndex = currentDay - 1;
-            
-            if (appState.challengesCompleted[todayIndex]) {
-                showNotification("التحدي مكتمل", "لقد أكملت هذا التحدي بالفعل", "info");
-                return;
-            }
-            
-            appState.challengesCompleted[todayIndex] = true;
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateChallengesSection();
-            updateDashboard();
-            
-            createHeartAnimation();
-            
-            showNotification("مبروك!", "لقد أكملت التحدي اليومي بنجاح", "success");
-        }
-        
-        // دالة تبديل حالة التحدي
-        function toggleChallenge(index) {
-            if (index > currentDay - 1) {
-                showNotification("غير متاح", "لا يمكن تعديل تحديات الأيام القادمة", "warning");
-                return;
-            }
-            
-            appState.challengesCompleted[index] = !appState.challengesCompleted[index];
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updateChallengesSection();
-            updateDashboard();
-            
-            const status = appState.challengesCompleted[index] ? 'مكتمل' : 'قيد التنفيذ';
-            showNotification("تم!", `تم تحديث حالة التحدي إلى ${status}`, "success");
-        }
-        
-        // دالة تحديث قسم أسماء الله الحسنى
-        function updateAllahNamesSection() {
-            const namesGrid = document.getElementById('allahNamesGrid');
-            namesGrid.innerHTML = '';
-            
-            const todayIndex = currentDay - 1;
-            
-            for (let i = 0; i < allahNames.length; i++) {
-                const name = allahNames[i];
-                const nameCard = document.createElement('div');
-                nameCard.className = `name-card ${i === todayIndex ? 'active' : ''}`;
-                
-                nameCard.innerHTML = `
-                    <div class="name-arabic">${name.name}</div>
-                    <div class="name-meaning">${name.meaning}</div>
-                    <div class="mt-2">${i === todayIndex ? '<strong>اسم اليوم</strong>' : `اليوم ${i + 1}`}</div>
-                `;
-                
-                namesGrid.appendChild(nameCard);
-            }
-        }
-        
-        // دالة تبديل تبويبات الأذكار
-        function showAdhkarTab(tabName) {
-            const tabs = document.querySelectorAll('.adhkar-tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            const activeTab = document.querySelector(`.adhkar-tab[onclick="showAdhkarTab('${tabName}')"]`);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-            
-            const contents = document.querySelectorAll('.adhkar-content');
-            contents.forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            const activeContent = document.getElementById(`${tabName}Adhkar`);
-            if (activeContent) {
-                activeContent.classList.add('active');
-            }
-        }
-        
-        // دالة تحديث قسم الأذكار
-        function updateAdhkarSection() {
-            const morningList = document.getElementById('morningAdhkarList');
-            morningList.innerHTML = '';
-            
-            morningAdhkar.forEach((dhikr, index) => {
-                const dhikrItem = document.createElement('div');
-                dhikrItem.className = 'dhikr-item';
-                
-                dhikrItem.innerHTML = `
-                    <div class="dhikr-text">${dhikr.text}</div>
-                    <div class="dhikr-count">${dhikr.count} مرة</div>
-                `;
-                
-                morningList.appendChild(dhikrItem);
-            });
-            
-            const eveningList = document.getElementById('eveningAdhkarList');
-            eveningList.innerHTML = '';
-            
-            eveningAdhkar.forEach((dhikr, index) => {
-                const dhikrItem = document.createElement('div');
-                dhikrItem.className = 'dhikr-item';
-                
-                dhikrItem.innerHTML = `
-                    <div class="dhikr-text">${dhikr.text}</div>
-                    <div class="dhikr-count">${dhikr.count} مرة</div>
-                `;
-                
-                eveningList.appendChild(dhikrItem);
-            });
-            
-            const sleepList = document.getElementById('sleepAdhkarList');
-            sleepList.innerHTML = '';
-            
-            sleepAdhkar.forEach((dhikr, index) => {
-                const dhikrItem = document.createElement('div');
-                dhikrItem.className = 'dhikr-item';
-                
-                dhikrItem.innerHTML = `
-                    <div class="dhikr-text">${dhikr.text}</div>
-                    <div class="dhikr-count">${dhikr.count} مرة</div>
-                `;
-                
-                sleepList.appendChild(dhikrItem);
-            });
-        }
-        
-        // دالة إضافة دعاء شخصي
-        function addPersonalDua() {
-            const input = document.getElementById('newDuaInput');
-            const duaText = input.value.trim();
-            
-            if (!duaText) {
-                showNotification("خطأ", "الرجاء كتابة دعاء", "error");
-                return;
-            }
-            
-            appState.personalDuas.push({
-                text: duaText,
-                completed: false,
-                date: new Date().toLocaleDateString('ar-SA')
-            });
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            input.value = '';
-            
-            updatePersonalDuasSection();
-            
-            showNotification("تم!", "تم إضافة الدعاء الشخصي", "success");
-        }
-        
-        // دالة تحديث قسم الأدعية الشخصية
-        function updatePersonalDuasSection() {
-            const duasList = document.getElementById('personalDuasList');
-            duasList.innerHTML = '';
-            
-            appState.personalDuas.forEach((dua, index) => {
-                const duaItem = document.createElement('div');
-                duaItem.className = `dua-item ${dua.completed ? 'completed' : ''}`;
-                
-                duaItem.innerHTML = `
-                    <div class="dua-content">
-                        <p>${dua.text}</p>
-                        <small>${dua.date}</small>
-                    </div>
-                    <div class="dua-checkbox" onclick="togglePersonalDua(${index})">
-                        <i class="fas fa-check"></i>
-                    </div>
-                `;
-                
-                duasList.appendChild(duaItem);
-            });
-        }
-        
-        // دالة تبديل حالة الدعاء الشخصي
-        function togglePersonalDua(index) {
-            appState.personalDuas[index].completed = !appState.personalDuas[index].completed;
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            updatePersonalDuasSection();
-            
-            const status = appState.personalDuas[index].completed ? 'مستجاب' : 'قيد الدعاء';
-            showNotification("تم!", `تم تحديث حالة الدعاء إلى ${status}`, "success");
-        }
-        
-        // دالة إنشاء تأثير القلوب
-        function createHeartAnimation() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = Math.random() * 100 + 'vh';
-            
-            document.body.appendChild(heart);
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 2000);
-        }
-        
-        // دالة تحديث واجهة المستخدم
-        function updateUI() {
-            document.getElementById('dayCounter').textContent = `اليوم ${currentDay} من رمضان`;
-            
-            const ramadanDaySelect = document.getElementById('ramadanDay');
-            if (ramadanDaySelect) {
-                ramadanDaySelect.value = currentDay;
-                updateRamadanDayNote();
-            }
-            
-            const prayerDaySelect = document.getElementById('prayerDaySelect');
-            if (prayerDaySelect) {
-                prayerDaySelect.value = currentDay;
-            }
-            
-            updateDashboard();
-            
-            loadTodayData();
-        }
-        
-        // دالة حفظ إعدادات المستخدم
-        function saveUserSettings() {
-            const userNameInput = document.getElementById('userName');
-            const ramadanDayInput = document.getElementById('ramadanDay');
-            
-            const name = userNameInput.value.trim();
-            const day = parseInt(ramadanDayInput.value);
-            
-            if (!name) {
-                showNotification("خطأ", "الرجاء إدخال اسمك", "error");
-                return;
-            }
-            
-            if (day < 1 || day > 30) {
-                showNotification("خطأ", "الرجاء اختيار يوم صحيح من رمضان", "error");
-                return;
-            }
-            
-            userName = name;
-            currentDay = day;
-            currentTasbeehIndex = currentDay - 1;
-            
-            appState.userName = name;
-            appState.currentDay = currentDay;
-            
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            document.getElementById('userSetupModal').style.display = 'none';
-            
-            document.getElementById('mainContent').style.display = 'block';
-            
-            updateUI();
-            
-            showNotification(`مرحباً ${userName}`, `نتمنى لك صوماً مقبولاً وإفطاراً شهياً في اليوم ${currentDay} من رمضان`, "success");
-            
-            const isFirstTime = !localStorage.getItem('ramadanAppFirstTime');
-            if (isFirstTime) {
-                localStorage.setItem('ramadanAppFirstTime', 'true');
-                showNotification("أهلاً بك!", "يمكنك التنقل بين الأقسام من القائمة العلوية. كل قسم يحتوي على مهام يومية لشهر رمضان", "info");
-            }
-        }
-        
-        // دالة تهيئة التطبيق
-        function initializeApp() {
-            const savedState = localStorage.getItem('ramadanAppState');
-            if (savedState) {
-                try {
-                    appState = JSON.parse(savedState);
-                    userName = appState.userName || "";
-                    currentDay = appState.currentDay || 1;
-                    currentTasbeehIndex = currentDay - 1;
-                    
-                    if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
-                        appState.tasbeehCounts = Array(30).fill(0);
-                    }
-                    if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
-                        appState.tasbeehCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
-                        appState.tasksCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
-                        appState.duasCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
-                        appState.hadithsCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
-                        appState.challengesCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
-                        appState.quranPartsCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
-                        appState.memorizationCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.personalDuas) {
-                        appState.personalDuas = [];
-                    }
-                } catch (e) {
-                    console.error("خطأ في تحميل الحالة:", e);
-                }
-            }
-            
-            checkDayChange();
-            
-            if (userName) {
-                document.getElementById('userSetupModal').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                updateUI();
-                
-                setupRamadanDateInfo();
-                updateRamadanDayNote();
-            } else {
-                document.getElementById('userSetupModal').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'none';
-                
-                setupRamadanDateInfo();
-                updateRamadanDayNote();
-            }
-            
-            initializeTopNav();
-            
-            setupRealTimeClock();
-            
-            setupAutoDateUpdate();
-            
-            const counterDisplay = document.getElementById('counterDisplay');
-            if (counterDisplay) {
-                let touchStartY = 0;
-                let touchStartValue = 0;
-                
-                counterDisplay.addEventListener('touchstart', (e) => {
-                    touchStartY = e.touches[0].clientY;
-                    touchStartValue = tasbeehCounter;
-                    e.preventDefault();
-                });
-                
-                counterDisplay.addEventListener('touchmove', (e) => {
-                    const touchY = e.touches[0].clientY;
-                    const deltaY = touchStartY - touchY;
-                    const increment = Math.round(deltaY / 10);
-                    
-                    const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, touchStartValue + increment));
-                    
-                    if (newValue !== tasbeehCounter) {
-                        tasbeehCounter = newValue;
-                        counterDisplay.textContent = tasbeehCounter;
-                        
-                        appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
-                        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                        
-                        if (tasbeehCounter % 10 === 0) {
-                            createHeartAnimation();
-                        }
-                    }
-                    
-                    e.preventDefault();
-                });
-                
-                counterDisplay.addEventListener('click', () => {
-                    incrementCounter();
-                });
-            }
-            
-            if (counterDisplay) {
-                let mouseStartY = 0;
-                let mouseStartValue = 0;
-                let isDragging = false;
-                
-                counterDisplay.addEventListener('mousedown', (e) => {
-                    mouseStartY = e.clientY;
-                    mouseStartValue = tasbeehCounter;
-                    isDragging = true;
-                    e.preventDefault();
-                });
-                
-                document.addEventListener('mousemove', (e) => {
-                    if (!isDragging) return;
-                    
-                    const mouseY = e.clientY;
-                    const deltaY = mouseStartY - mouseY;
-                    const increment = Math.round(deltaY / 10);
-                    
-                    const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, mouseStartValue + increment));
-                    
-                    if (newValue !== tasbeehCounter) {
-                        tasbeehCounter = newValue;
-                        counterDisplay.textContent = tasbeehCounter;
-                        
-                        appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
-                        localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-                        
-                        if (tasbeehCounter % 10 === 0) {
-                            createHeartAnimation();
-                        }
-                    }
-                });
-                
-                document.addEventListener('mouseup', () => {
-                    isDragging = false;
-                });
-            }
-            
-            showDebugInfo();
-        }
-        
-        // بدء التطبيق عند تحميل الصفحة
-        window.addEventListener('DOMContentLoaded', initializeApp);
-    </script>
-</body>
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
+    
+    // عرض معلومات التصحيح في وحدة التحكم
+    showDebugInfo();
 
+
+// بدء التطبيق عند تحميل الصفحة
+window.addEventListener('DOMContentLoaded', initializeApp);
+</script>
+</body>
 </html>
