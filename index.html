@@ -8,8 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-   
-   <style>
+    <style>
         :root {
             --primary-color: #8A2BE2;
             --secondary-color: #6A0DAD;
@@ -1239,7 +1238,8 @@
     <div class="notifications" id="notifications">
         <!-- سيتم إضافة الإشعارات ديناميكيا -->
     </div>
-<!-- القائمة الجانبية -->
+    
+    <!-- القائمة الجانبية -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2><i class="fas fa-moon"></i> يومك في رمضان</h2>
@@ -3818,84 +3818,6 @@ function initializeApp() {
             console.error("خطأ في تحميل الحالة:", e);
         }
     }
-    // إضافة تفاعل الماوس واللمس للعداد البنفسجي
-const counterDisplay = document.getElementById('counterDisplay');
-if (counterDisplay) {
-    // لللمس (الأجهزة المحمولة)
-    let touchStartY = 0;
-    let touchStartValue = 0;
-    
-    counterDisplay.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-        touchStartValue = tasbeehCounter;
-        e.preventDefault();
-    });
-    
-    counterDisplay.addEventListener('touchmove', (e) => {
-        const touchY = e.touches[0].clientY;
-        const deltaY = touchStartY - touchY;
-        const increment = Math.round(deltaY / 10);
-        
-        const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, touchStartValue + increment));
-        
-        if (newValue !== tasbeehCounter) {
-            tasbeehCounter = newValue;
-            counterDisplay.textContent = tasbeehCounter;
-            
-            appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            if (tasbeehCounter % 10 === 0) {
-                createHeartAnimation();
-            }
-        }
-        
-        e.preventDefault();
-    });
-    
-    // للنقر (Click)
-    counterDisplay.addEventListener('click', () => {
-        incrementCounter();
-    });
-    
-    // للسحب بالماوس (Mouse Drag)
-    let mouseStartY = 0;
-    let mouseStartValue = 0;
-    let isDragging = false;
-    
-    counterDisplay.addEventListener('mousedown', (e) => {
-        mouseStartY = e.clientY;
-        mouseStartValue = tasbeehCounter;
-        isDragging = true;
-        e.preventDefault();
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        
-        const mouseY = e.clientY;
-        const deltaY = mouseStartY - mouseY;
-        const increment = Math.round(deltaY / 10);
-        
-        const newValue = Math.max(0, Math.min(tasbeehat[currentTasbeehIndex].count, mouseStartValue + increment));
-        
-        if (newValue !== tasbeehCounter) {
-            tasbeehCounter = newValue;
-            counterDisplay.textContent = tasbeehCounter;
-            
-            appState.tasbeehCounts[currentTasbeehIndex] = tasbeehCounter;
-            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
-            
-            if (tasbeehCounter % 10 === 0) {
-                createHeartAnimation();
-            }
-        }
-    });
-    
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-}
     
     // التحقق من تغيير اليوم الحقيقي
     checkDayChange();
@@ -3943,7 +3865,16 @@ if (counterDisplay) {
     setupAutoDateUpdate();
     
     // إعداد حساسية اللمس لعداد التسبيح
-    
+    const counterDisplay = document.getElementById('counterDisplay');
+    if (counterDisplay) {
+        let touchStartY = 0;
+        let touchStartValue = 0;
+        
+        counterDisplay.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartValue = tasbeehCounter;
+            e.preventDefault();
+        });
         
         counterDisplay.addEventListener('touchmove', (e) => {
             const touchY = e.touches[0].clientY;
@@ -4019,11 +3950,10 @@ if (counterDisplay) {
     
     // عرض معلومات التصحيح في وحدة التحكم
     showDebugInfo();
-
+}
 
 // بدء التطبيق عند تحميل الصفحة
 window.addEventListener('DOMContentLoaded', initializeApp);
 </script>
 </body>
 </html>
-
