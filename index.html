@@ -4572,76 +4572,8 @@
             }
             
             showDebugInfo();
-            setupBackButton();
-        }
-        // دالة للتحكم في زر الرجوع (Back Button)
-function setupBackButton() {
-    // مصفوفة لتتبع تاريخ التصفح داخل التطبيق
-    if (!window.appNavigationHistory) {
-        window.appNavigationHistory = ['dashboard']; // الصفحة الرئيسية كصفحة بداية
-    }
-    
-    // دالة للانتقال بين الأقسام مع تسجيل التاريخ
-    window.showSectionWithHistory = function(sectionId) {
-        // تسجيل القسم الحالي في التاريخ قبل الانتقال
-        const currentSection = document.querySelector('.section.active');
-        if (currentSection) {
-            const currentId = currentSection.id;
-            window.appNavigationHistory.push(currentId);
         }
         
-        // الانتقال للقسم الجديد
-        showSection(sectionId);
-    };
-    
-    // دالة للرجوع للقسم السابق
-    function goBack() {
-        if (window.appNavigationHistory.length > 1) {
-            // إزالة القسم الحالي
-            window.appNavigationHistory.pop();
-            
-            // الرجوع للقسم السابق
-            const previousSection = window.appNavigationHistory[window.appNavigationHistory.length - 1];
-            showSection(previousSection);
-            return true; // تم التعامل مع الزر
-        }
-        return false; // لم يتم التعامل مع الزر (يخرج من التطبيق)
-    }
-    
-    // الاستماع لحدث popstate (زر الرجوع في المتصفح)
-    window.addEventListener('popstate', function(event) {
-        if (!goBack()) {
-            // إذا لم يكن هناك صفحات في التاريخ، اخرج من التطبيق
-            if (confirm('هل تريد الخروج من التطبيق؟')) {
-                window.history.back();
-            } else {
-                // البقاء في التطبيق
-                window.history.pushState(null, null, window.location.href);
-            }
-        }
-    });
-    
-    // تغيير جميع روابط showSection لاستخدام showSectionWithHistory
-    document.querySelectorAll('a[onclick^="showSection"]').forEach(link => {
-        const onclickAttr = link.getAttribute('onclick');
-        if (onclickAttr) {
-            const newOnclick = onclickAttr.replace('showSection', 'showSectionWithHistory');
-            link.setAttribute('onclick', newOnclick);
-        }
-    });
-    
-    // تغيير الأزرار أيضاً
-    document.querySelectorAll('button[onclick^="showSection"]').forEach(button => {
-        const onclickAttr = button.getAttribute('onclick');
-        if (onclickAttr) {
-            const newOnclick = onclickAttr.replace('showSection', 'showSectionWithHistory');
-            button.setAttribute('onclick', newOnclick);
-        }
-    });
-    
-    // إضافة state أولي للتاريخ
-    window.history.pushState({ page: 'dashboard' }, '', '#dashboard');
-}
         // بدء التطبيق عند تحميل الصفحة
         window.addEventListener('DOMContentLoaded', initializeApp);
     </script>
