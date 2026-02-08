@@ -2675,6 +2675,100 @@
     </div>
 
     <script>
+        // ======== إصلاح التحميل ========
+document.addEventListener('DOMContentLoaded', function() {
+    // عرض نموذج الإعداد فوراً
+    const setupModal = document.getElementById('userSetupModal');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (setupModal && mainContent) {
+        setupModal.style.display = 'block';
+        mainContent.style.display = 'none';
+        
+        // تهيئة معلومات رمضان
+        setupRamadanDateInfo();
+        updateRamadanDayNote();
+    }
+    
+    // تهيئة القائمة
+    initializeTopNav();
+    
+    // تشغيل الساعة
+    setupRealTimeClock();
+    
+    // تحميل البيانات الأساسية
+    loadBasicData();
+});
+
+function loadBasicData() {
+    const savedState = localStorage.getItem('ramadanAppState');
+    
+    if (savedState) {
+        try {
+            const state = JSON.parse(savedState);
+            
+            if (state.userName && state.currentDay) {
+                // إخفاء نموذج الإعداد
+                document.getElementById('userSetupModal').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                
+                // تحديث واجهة المستخدم
+                userName = state.userName;
+                currentDay = state.currentDay;
+                updateUI();
+            }
+        } catch (e) {
+            console.error('Error loading state:', e);
+        }
+    }
+}
+
+// ======== دالة حفظ الإعدادات (مبسطة) ========
+function saveUserSettings() {
+    const userNameInput = document.getElementById('userName');
+    const ramadanDayInput = document.getElementById('ramadanDay');
+    
+    const name = userNameInput.value.trim();
+    const day = parseInt(ramadanDayInput.value);
+    
+    if (!name) {
+        alert('الرجاء إدخال اسمك');
+        return;
+    }
+    
+    if (day < 1 || day > 30) {
+        alert('الرجاء اختيار يوم صحيح من رمضان');
+        return;
+    }
+    
+    userName = name;
+    currentDay = day;
+    
+    // حفظ بسيط
+    localStorage.setItem('ramadanAppState', JSON.stringify({
+        userName: name,
+        currentDay: day
+    }));
+    
+    // إخفاء النموذج
+    document.getElementById('userSetupModal').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    
+    // تحديث الواجهة
+    updateUI();
+    
+    alert(`مرحباً ${name}! اليوم ${day} من رمضان`);
+}
+
+// ======== تحديث واجهة المستخدم (مبسطة) ========
+function updateUI() {
+    document.getElementById('dayCounter').textContent = `اليوم ${currentDay} من رمضان`;
+    
+    const ramadanDaySelect = document.getElementById('ramadanDay');
+    if (ramadanDaySelect) {
+        ramadanDaySelect.value = currentDay;
+    }
+}
         // بيانات التطبيق
         let currentDay = 1;
         let userName = "";
@@ -5702,3 +5796,4 @@
     </script>
 </body>
 </html>
+
