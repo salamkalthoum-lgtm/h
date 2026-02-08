@@ -1,10 +1,8 @@
-// sw.js - Service Worker للتحديث التلقائي
-const CACHE_NAME = 'ramadan-app-v1';
-const DYNAMIC_CACHE = 'ramadan-dynamic-v1';
+// sw.js - Service Worker محسن
+const CACHE_NAME = 'ramadan-app-v' + new Date().getTime();
 const APP_VERSION = '1.0.0';
 
-// الملفات التي سيتم تخزينها في الكاش
-const STATIC_FILES = [
+const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
@@ -15,15 +13,16 @@ const STATIC_FILES = [
 
 // تثبيت Service Worker
 self.addEventListener('install', event => {
-  console.log('[Service Worker] Installing...');
+  console.log('🚀 تثبيت Service Worker جديد');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('[Service Worker] Caching app shell');
-        return cache.addAll(STATIC_FILES);
+        console.log('📦 تخزين الملفات في الكاش');
+        return cache.addAll(urlsToCache);
       })
       .then(() => {
+        console.log('✅ تم التثبيت بنجاح');
         return self.skipWaiting();
       })
   );
@@ -31,23 +30,22 @@ self.addEventListener('install', event => {
 
 // تفعيل Service Worker
 self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activating...');
+  console.log('🎯 تفعيل Service Worker');
   
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          // حذف الكاش القديم
-          if (cacheName !== CACHE_NAME && cacheName !== DYNAMIC_CACHE) {
-            console.log('[Service Worker] Deleting old cache:', cacheName);
+          if (cacheName !== CACHE_NAME) {
+            console.log(`🗑️ حذف الكاش القديم: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
       );
     })
     .then(() => {
-      // إرسال رسالة إلى الصفحة الرئيسية لإعلامها بتفعيل الـ Service Worker
-      return self.clients.matchAll().then(clients => {
+      // إرسال رسالة إلى الصفحة
+      self.clients.matchAll().then(clients => {
         clients.forEach(client => {
           client.postMessage({
             type: 'SW_ACTIVATED',
@@ -55,50 +53,68 @@ self.addEventListener('activate', event => {
           });
         });
       });
+      
+      return self.clients.claim();
     })
-    .then(() => self.clients.claim())
   );
 });
 
-// اعتراض الطلبات
+// معالجة الطلبات
 self.addEventListener('fetch', event => {
-  // تجاهل طلبات POST وطلبات الملفات الأخرى غير GET
+  // تجاهل طلبات POST
   if (event.request.method !== 'GET') return;
   
   event.respondWith(
     caches.match(event.request)
-      .then(cachedResponse => {
-        // إذا كان الملف في الكاش، استخدمه
-        if (cachedResponse) {
-          // جلب النسخة المحدثة من الإنترنت في الخلفية
+      .then(response => {
+        // إذا كان الملف في الكاش
+        if (response) {
+          // تحديث الكاش في الخلفية
           fetchAndCache(event.request);
-          return cachedResponse;
+          return response;
         }
         
-        // إذا لم يكن في الكاش، جلب من الإنترنت ثم خزن في الكاش
+        // جلب من الشبكة
         return fetchAndCache(event.request);
       })
-      .catch(error => {
-        console.error('[Service Worker] Fetch failed:', error);
-        // يمكن إظهار صفحة خطأ مخصصة هنا
+      .catch(() => {
+        // صفحة الخطأ
+        return new Response(`
+          <!DOCTYPE html>
+          <html lang="ar" dir="rtl">
+          <head>
+              <meta charset="UTF-8">
+              <title>لا يوجد اتصال</title>
+              <style>
+                  body { font-family: 'Cairo', sans-serif; text-align: center; padding: 50px; }
+                  h1 { color: #8A2BE2; }
+                  button { background: #8A2BE2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+              </style>
+          </head>
+          <body>
+              <h1>⚠️ لا يوجد اتصال بالإنترنت</h1>
+              <p>الرجاء التحقق من اتصالك بالإنترنت</p>
+              <button onclick="window.location.reload()">إعادة تحميل</button>
+          </body>
+          </html>
+        `, {
+          headers: { 'Content-Type': 'text/html; charset=utf-8' }
+        });
       })
   );
 });
 
-// دالة لجلب وتخزين الملفات
+// دالة الجلب والتخزين
 function fetchAndCache(request) {
   return fetch(request)
     .then(response => {
-      // التحقق من صحة الاستجابة
       if (!response || response.status !== 200 || response.type !== 'basic') {
         return response;
       }
       
-      // استنساخ الاستجابة
       const responseToCache = response.clone();
       
-      // فتح الكاش الديناميكي وتخزين الاستجابة
-      caches.open(DYNAMIC_CACHE)
+      caches.open(CACHE_NAME)
         .then(cache => {
           cache.put(request, responseToCache);
         });
@@ -107,10 +123,19 @@ function fetchAndCache(request) {
     });
 }
 
-// استقبال الرسائل من الصفحة الرئيسية
+// ====== نظام التحديثات ======
+// استقبال الرسائل
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('⏩ تخطي الانتظار...');
     self.skipWaiting();
+    
+    // إخبار الصفحات بإعادة التحميل
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({ type: 'RELOAD_PAGE' });
+      });
+    });
   }
   
   if (event.data && event.data.type === 'CHECK_UPDATE') {
@@ -118,44 +143,94 @@ self.addEventListener('message', event => {
   }
 });
 
-// دالة للتحقق من وجود تحديثات
+// دالة التحقق من التحديثات
 function checkForUpdate() {
-  console.log('[Service Worker] Checking for updates...');
+  console.log('🔍 التحقق من التحديثات...');
   
-  // التحقق من ملف manifest أو ملف إصدار للمقارنة
-  fetch('./?v=' + Date.now(), { cache: 'no-store' })
-    .then(response => response.text())
+  fetch('./?update_check=' + Date.now(), { 
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('فشل الجلب');
+      return response.text();
+    })
     .then(html => {
-      // استخراج إصدار الموقع من التعليق المحدد
       const versionMatch = html.match(/<!-- APP_VERSION:(\d+\.\d+\.\d+) -->/);
-      const newVersion = versionMatch ? versionMatch[1] : APP_VERSION;
+      if (!versionMatch) return;
+      
+      const newVersion = versionMatch[1];
       
       if (newVersion !== APP_VERSION) {
-        // إرسال إشعار بوجود تحديث جديد
+        console.log(`🎯 نسخة جديدة: ${newVersion}`);
+        
+        // إرسال إشعار إلى جميع الصفحات
         self.clients.matchAll().then(clients => {
           clients.forEach(client => {
             client.postMessage({
               type: 'UPDATE_AVAILABLE',
               newVersion: newVersion,
-              currentVersion: APP_VERSION
+              currentVersion: APP_VERSION,
+              timestamp: Date.now()
             });
           });
         });
+        
+        // تحديث تلقائي في الخلفية
+        self.skipWaiting();
       }
     })
     .catch(error => {
-      console.error('[Service Worker] Update check failed:', error);
+      console.error('❌ خطأ في التحقق:', error);
     });
 }
 
-// التحقق من التحديثات بشكل دوري
-self.addEventListener('sync', event => {
-  if (event.tag === 'check-update') {
-    event.waitUntil(checkForUpdate());
-  }
+// التحقق كل 15 دقيقة
+setInterval(checkForUpdate, 15 * 60 * 1000);
+
+// التحقق عند الاتصال بالإنترنت
+self.addEventListener('online', checkForUpdate);
+
+// ====== الإشعارات ======
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : {};
+  
+  const options = {
+    body: data.body || 'تذكير من تطبيق يومك في رمضان',
+    icon: '/icon-192x192.png',
+    badge: '/icon-192x192.png',
+    vibrate: [200, 100, 200],
+    tag: 'ramadan-notification',
+    requireInteraction: true,
+    actions: [
+      {
+        action: 'open',
+        title: 'فتح التطبيق'
+      },
+      {
+        action: 'update',
+        title: 'تحديث الآن'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'يومك في رمضان', options)
+  );
 });
 
-// التحقق من التحديثات عند اتصال الإنترنت
-self.addEventListener('online', () => {
-  checkForUpdate();
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  if (event.action === 'open') {
+    event.waitUntil(clients.openWindow('/'));
+  } else if (event.action === 'update') {
+    // تحديث التطبيق
+    self.skipWaiting();
+    event.waitUntil(clients.openWindow('/?update=true'));
+  }
 });
