@@ -1,6 +1,6 @@
 // sw.js - Service Worker محسن
 const CACHE_NAME = 'ramadan-app-v' + new Date().getTime();
-const APP_VERSION = '1.3.2';
+const APP_VERSION = '1.3.3';
 
 const urlsToCache = [
   './',
