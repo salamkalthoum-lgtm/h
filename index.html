@@ -1483,13 +1483,109 @@
             from { transform: translateY(100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        
+        /* أنماط إشعارات التحديث */
+        .update-notification {
+            border-right: 5px solid #FF9800;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+        
+        .update-notification:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 152, 0, 0.4);
+        }
+        
+        .update-button {
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .update-button:hover {
+            background-color: #F57C00;
+            transform: translateY(-2px);
+        }
+        
+        .update-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* أنماط نسخة التطبيق */
+        .version-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(138, 43, 226, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            z-index: 100;
+        }
+        
+        .update-check-section {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px dashed var(--primary-color);
+        }
+        
+        .update-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* مؤشر تحديث */
+        .updating-indicator {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 9999;
+            animation: slideDown 0.5s ease;
+        }
+        
+        .updating-indicator.show {
+            display: block;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
+    <!-- مؤشر التحديث -->
+    <div class="updating-indicator" id="updatingIndicator">
+        <i class="fas fa-sync-alt fa-spin"></i> جاري تحديث التطبيق...
+    </div>
+    
     <!-- نافذة إذن الإشعارات -->
     <div class="permission-modal" id="permissionModal">
         <div class="permission-content">
-                  <h2><i class="fas fa-bell"></i> تفعيل الإشعارات</h2>
+            <h2><i class="fas fa-bell"></i> تفعيل الإشعارات</h2>
             <p>نود إعلامك أن تطبيق "يومك في رمضان" سيرسل لك تذكيرات وإشعارات مهمة خلال الشهر الكريم:</p>
             <ul style="text-align: right; margin: 15px 0; padding-right: 20px;">
                 <li>تذكير بأوقات الصلاة قبل 10 دقائق</li>
@@ -1508,6 +1604,11 @@
     <!-- شاشة حالة Service Worker -->
     <div class="service-worker-status" id="serviceWorkerStatus">
         <div id="swStatusMessage">جاري تحميل خدمة الإشعارات...</div>
+    </div>
+    
+    <!-- نسخة التطبيق -->
+    <div class="version-info" id="versionInfo">
+        الإصدار: 1.0.0
     </div>
     
     <!-- إشعارات -->
@@ -1544,6 +1645,7 @@
                 <li><a href="#personal-duas" onclick="showSection('personal-duas')"><i class="fas fa-pen"></i> أدعية شخصية</a></li>
                 <li><a href="#notification-settings" onclick="showSection('notification-settings')"><i class="fas fa-bell"></i> إعدادات الإشعارات</a></li>
                 <li><a href="#statistics" onclick="showSection('statistics')"><i class="fas fa-chart-bar"></i> الإحصائيات</a></li>
+                <li><a href="#updates" onclick="showSection('updates')"><i class="fas fa-sync-alt"></i> التحديثات</a></li>
             </ul>
         </div>
         
@@ -1571,7 +1673,8 @@
                 <div class="todays-name" id="todaysName">الرحمن</div>
                 <p class="name-explanation" id="nameExplanation">واسع الرحمة التي تشمل كل الخلق في الدنيا. الله تعالى يرحم جميع خلقه في الدنيا، المؤمن والكافر، البر والفاجر، ويعطيهم ويحسن إليهم.</p>
             </div>
-       <div class="dashboard-cards">
+            
+            <div class="dashboard-cards">
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-pray"></i>
@@ -1743,8 +1846,9 @@
             <div class="tasbeeh-list" id="tasbeehList">
                 <!-- سيتم إضافة التسبيحات ديناميكيا -->
             </div>
-    </section>
-            <!-- أوقات الصلاة -->
+        </section>
+        
+        <!-- أوقات الصلاة -->
         <section id="prayer-times" class="section" style="display: none;">
             <div class="header">
                 <div class="header-content">
@@ -2261,7 +2365,9 @@
                     <button class="btn btn-primary btn-block" onclick="loginToStatistics()">تسجيل الدخول</button>
                     
                     <div class="mt-3" style="text-align: center; font-size: 0.9rem;">
-         
+                        <p>بيانات الدخول الافتراضية:</p>
+                        <p>اسم المستخدم: <strong>admin</strong></p>
+                        <p>كلمة المرور: <strong>ramadan2026</strong></p>
                     </div>
                 </div>
             </div>
@@ -2360,6 +2466,160 @@
                 </div>
             </div>
         </section>
+        
+        <!-- قسم التحديثات الجديد -->
+        <section id="updates" class="section" style="display: none;">
+            <div class="header">
+                <div class="header-content">
+                    <h1><i class="fas fa-sync-alt"></i> تحديثات التطبيق</h1>
+                    <p>إدارة تحديثات تطبيق "يومك في رمضان" والتحقق من النسخ الجديدة</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>معلومات التطبيق</h3>
+                </div>
+                <div class="card-content">
+                    <div class="update-check-section">
+                        <h4 class="section-title">حالة التطبيق</h4>
+                        <div id="appStatusInfo">
+                            <p><strong>الإصدار الحالي:</strong> <span id="currentVersion">1.0.0</span></p>
+                            <p><strong>تاريخ التحديث الأخير:</strong> <span id="lastUpdateDate">جارٍ التحميل...</span></p>
+                            <p><strong>حالة التحديث:</strong> <span id="updateStatus" class="status-checking">جارٍ التحقق...</span></p>
+                            <p><strong>أخر فحص للتحديثات:</strong> <span id="lastCheckDate">لم يتم الفحص بعد</span></p>
+                        </div>
+                        
+                        <div class="update-options">
+                            <button class="btn btn-primary" onclick="checkForUpdates()" id="checkUpdateBtn">
+                                <i class="fas fa-sync-alt"></i> التحقق من التحديثات
+                            </button>
+                            
+                            <button class="update-button" onclick="applyUpdate()" id="applyUpdateBtn" style="display: none;">
+                                <i class="fas fa-download"></i> تثبيت التحديث
+                            </button>
+                            
+                            <button class="btn btn-warning" onclick="forceReload()">
+                                <i class="fas fa-redo"></i> إعادة تحميل الصفحة
+                            </button>
+                        </div>
+                        
+                        <div id="updateDetails" style="display: none; margin-top: 20px; padding: 15px; background-color: #f0f8ff; border-radius: 8px;">
+                            <h5><i class="fas fa-clipboard-list"></i> تفاصيل التحديث الجديد:</h5>
+                            <ul id="updateChangelog" style="padding-right: 20px; margin-top: 10px;">
+                                <li>إصلاحات وتحسينات عامة</li>
+                                <li>تحسين أداء التطبيق</li>
+                                <li>إضافة ميزات جديدة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="fas fa-cogs"></i>
+                    <h3>إعدادات التحديثات</h3>
+                </div>
+                <div class="card-content">
+                    <div class="setting-item">
+                        <div>
+                            <h4>التحديث التلقائي</h4>
+                            <p>تحديث التطبيق تلقائياً عند اكتشاف نسخة جديدة</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoUpdateSwitch" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h4>إشعارات التحديث</h4>
+                            <p>إظهار إشعار عند وجود تحديث جديد</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="updateNotificationSwitch" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h4>حفظ البيانات التلقائي</h4>
+                            <p>عمل نسخة احتياطية من البيانات قبل التحديث</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoBackupSwitch" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveUpdateSettings()" style="margin-top: 20px;">
+                        <i class="fas fa-save"></i> حفظ الإعدادات
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="fas fa-history"></i>
+                    <h3>سجل التحديثات</h3>
+                </div>
+                <div class="card-content">
+                    <div class="table-responsive">
+                        <table class="quran-progress-table">
+                            <thead>
+                                <tr>
+                                    <th>الإصدار</th>
+                                    <th>التاريخ</th>
+                                    <th>التغييرات</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="updateHistoryTable">
+                                <tr>
+                                    <td>1.0.0</td>
+                                    <td>١٠ ربيع الأول ١٤٤٥</td>
+                                    <td>الإصدار الأولي</td>
+                                    <td><span class="status-completed">مثبت</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>نسخ احتياطية</h3>
+                </div>
+                <div class="card-content">
+                    <p>أنشئ نسخة احتياطية من بياناتك لحفظها من الضياع:</p>
+                    
+                    <div class="update-options">
+                        <button class="btn btn-primary" onclick="createBackup()">
+                            <i class="fas fa-save"></i> إنشاء نسخة احتياطية
+                        </button>
+                        
+                        <button class="btn btn-warning" onclick="restoreFromBackup()">
+                            <i class="fas fa-undo"></i> استعادة من نسخة
+                        </button>
+                        
+                        <button class="btn btn-info" onclick="downloadBackup()">
+                            <i class="fas fa-download"></i> تحميل النسخة
+                        </button>
+                    </div>
+                    
+                    <div id="backupInfo" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; display: none;">
+                        <h5><i class="fas fa-info-circle"></i> معلومات النسخة الاحتياطية</h5>
+                        <p id="backupDetails">جارٍ التحميل...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
     
     <!-- نافذة إعدادات المستخدم -->
@@ -2400,7 +2660,7 @@
                 <option value="21">اليوم الحادي والعشرون</option>
                 <option value="22">اليوم الثاني والعشرون</option>
                 <option value="23">اليوم الثالث والعشرون</option>
-                <option value="24">اليوم الرابع والعشرون</option>
+                                <option value="24">اليوم الرابع والعشرون</option>
                 <option value="25">اليوم الخامس والعشرون</option>
                 <option value="26">اليوم السادس والعشرون</option>
                 <option value="27">اليوم السابع والعشرون</option>
@@ -2522,7 +2782,7 @@
             { text: "عن أنس بن مالك رضي الله عنه قال: قال رسول الله ﷺ: «يسروا ولا تعسروا، وبشروا ولا تنفروا» (رواه البخاري ومسلم)", title: "التيسير والبشارة" },
             { text: "عن عثمان بن عفان رضي الله عنه قال: قال رسول الله ﷺ: «خيركم من تعلم القرآن وعلّمه» (رواه البخاري)", title: "تعلم القرآن وتعليمه" },
             { text: "عن عبد الله بن مسعود رضي الله عنه قال: قال رسول الله ﷺ: «إن الله جميل يحب الجمال» (رواه مسلم)", title: "الله جميل يحب الجمال" },
-            { text: "عن جرير بن عبد الله رضي الله عنه قال: قال رسول الله ﷺ: «من لا يَرحم لا يُرحم» (رواه البخاري ومسلم)", title: "الرحمة" },
+            { text: "عن جرير بن عبد الله rضى الله عنه قال: قال رسول الله ﷺ: «من لا يَرحم لا يُرحم» (رواه البخاري ومسلم)", title: "الرحمة" },
             { text: "عن عائشة رضي الله عنها قالت: قال رسول الله ﷺ: «أحبّ الأعمال إلى الله أدومها وإن قل» (رواه البخاري ومسلم)", title: "الدوام على العمل" },
             { text: "عن عبد الله بن عمرو رضي الله عنهما قال: قال رسول الله ﷺ: «المسلم من سلم المسلمون من لسانه ويده» (رواه البخاري ومسلم)", title: "سلامة المسلمين" },
             { text: "عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «الحياء من الإيمان» (رواه مسلم)", title: "الحياء من الإيمان" },
@@ -2535,11 +2795,11 @@
             { text: "عن أبي ذر رضي الله عنه قال: قال رسول الله ﷺ: «اتقِ الله حيثما كنت» (رواه الترمذي)", title: "تقوى الله" },
             { text: "عن أبي هريرة رضي الله عنه قال: قال رجل للنبي ﷺ: أوصني، قال: «لا تغضب» (رواه البخاري)", title: "الوصية بعدم الغضب" },
             { text: "عن النعمان بن بشير رضي الله عنهما قال: قال رسول الله ﷺ: «الدعاء هو العبادة» (رواه الترمذي)", title: "الدعاء عبادة" },
-            { text: "عن أبي هريرة rضى الله عنه قال: قال رسول الله ﷺ: «من سلك طريقًا يلتمس فيه علمًا سهّل الله له به طريقًا إلى الجنة» (رواه مسلم)", title: "طلب العلم" },
+            { text: "عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «من سلك طريقًا يلتمس فيه علمًا سهّل الله له به طريقًا إلى الجنة» (رواه مسلم)", title: "طلب العلم" },
             { text: "عن ابن عباس رضي الله عنهما قال: قال رسول الله ﷺ: «احفظ الله يحفظك» (رواه الترمذي)", title: "حفظ الله" },
             { text: "عن أنس بن مالك رضي الله عنه قال: قال رسول الله ﷺ: «المرء مع من أحب» (رواه البخاري ومسلم)", title: "المرء مع من أحب" },
             { text: "عن ابن عباس رضي الله عنهما قال: قال رسول الله ﷺ: «نعمتان مغبون فيهما كثير من الناس: الصحة والفراغ» (رواه البخاري)", title: "نعمة الصحة والفراغ" },
-            { text: "عن أبي هريرة rضى الله عنه قال: قال رسول الله ﷺ: «ما نقص مال من صدقة» (رواه مسلم)", title: "الصدقة لا تنقص المال" },
+            { text: "عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «ما نقص مال من صدقة» (رواه مسلم)", title: "الصدقة لا تنقص المال" },
             { text: "عن عبد الله بن عمرو رضي الله عنهما قال: قال رسول الله ﷺ: «أقربكم مني مجلسًا يوم القيامة أحاسنكم أخلاقًا» (رواه الترمذي)", title: "حسن الخلق" },
             { text: "عن عائشة رضي الله عنها قالت: قال رسول الله ﷺ: «إن الله رفيق يحب الرفق في الأمر كله» (رواه مسلم)", title: "الرفق في الأمر" }
         ];
@@ -2571,7 +2831,6 @@
             "الاقتصاد في الإنفاق",
             "التفكير الإيجابي وتجنب التشاؤم",
             "الصبر على مشقة الصيام",
-                    "الصبر على مشقة الصيام",
             "التحلي بالأخلاق الحسنة مع الجميع",
             "التفكر في خلق الله",
             "كتابة مذكرات رمضانية",
@@ -2644,13 +2903,13 @@
         
         // بيانات أذكار المساء
         const eveningAdhkar = [
-            { text: "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللَّهِ وَمَلائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ * لا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ رَبَّنَا لا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا رَبَّنَا وَلا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا رَبَّنَا وَلا تُحَمِّلْنَا مَا لا طَاقَةَ لَنَا بِهِ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا أَنْتَ مَوْلانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", count: 1 },
+            { text: "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللَّهِ وَمَلائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ * لا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ رَبَّنَا لا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا رَبَّنَا وَلا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا رَبَّنَا وَلا تُحَمِّلْنَا مَا لا طَاقَةَ لَنَا بِهِ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارَحَمْنَا أَنْتَ مَوْلانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", count: 1 },
             { text: "اللّهُ لا إلهَ إلا هو الحيُّ القيّوم… (آية الكرسي)", count: 1 },
              { text: "   قُلۡ هُوَ ٱللَّهُ أَحَدٌ (1) ٱللَّهُ ٱلصَّمَدُ (2) لَمۡ يَلِدۡ وَلَمۡ يُولَدۡ (3) وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ (4)", count: 3 },
             { text: "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ (1) مِن شَرِّ مَا خَلَقَ (2) وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ (3) وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِي ٱلۡعُقَدِ (4) وَمِن شَرِّ ح_اسِدٍ إِذَا حَسَدَ (5)   ", count: 3 },
             { text: "  قُلۡ أَعُوذُ بِرَبِّ ٱلنَّاسِ (1) مَلِكِ ٱلنَّاسِ (2) إِلَٰهِ ٱلنَّاسِ (3) مِن شَرِّ ٱلۡوَسۡوَاسِ ٱلۡخَنَّاسِ (4) ٱلَّذِي يُوَسۡوِسُ فِي صُدُورِ ٱلنَّاسِ (5) مِنَ ٱلۡجِنَّةِ وَٱلنَّاسِ (6)", count: 3 },
             { text: "أمسينا وأمسى الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير اللهم اني اسالك خير هذه الليلة وخير مابعدها واعوذ بك من شر هذه الليلة ومن شر مابعدها ربي اعوذبك من الكسل وسوء الكبر ربي اعوذ بك من عذاب في النار وعذاب في القبر…", count: 1 },
-             { text: "  اللهم انت ربي لا اله الا انت خلقتني وانا عبدك وانا على عهدك ووعدك مااتسطعت اعوذ بك من شر ماصنعت ابوء لك بنعمتك علي وابوء بذنبي فاغفرلي فانه لايغفر الذنوب الا انت  ", count: 1 },
+             { text: "  اللهم انت ربي لا اله الا انت خلقتني وانا عبدك وانا على عهدك ووعدك مااتسطعت اعوذ بك من شر mاصنعت ابوء لك بنعمتك علي وابوء بذنبي فاغفرلي فانه لايغفر الذنوب الا انت  ", count: 1 },
             { text: "رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا", count: 3 },
             { text: "اللهم اني امسيت اشهدك واشهد حملة عرشك وملائكتك وجميع خلقك انك انت الله لا اله الا انت وان محمد عبدك ورسولك", count: 4 },
             { text: "اللهم امسى بي من نعمتك او باحد من خلقك فمنك وحدك لاشريك لك  فلك الحمد ولك الشكر ", count: 1 },
@@ -2664,7 +2923,7 @@
             { text: "ياحي ياقيوم برحمتك استغيث اصلح لي شاني كله ولاتكلني الى نفسي طرفة عين", count: 3 },
             { text: "اللهم إني أسألك خير هذه الليلة فتحه ونصرها ونورها وبركتها وهداها", count: 1 },
             { text: "اللهم عالم الغيب والشهادة فاطر السماوات والارض اعوذبك من شر نفسي ومن شر الشيطان وشركه وان اقترف على نفسي سوء او اجره الى مسلم   ", count: 3 },
-            { text: "اعوذبكلمات الله التامات من شر ماخلق    ", count: 3 },
+            { text: "اعوذبكلمات الله التامات من شر mاخلق    ", count: 3 },
             { text: "  اللهم صلي وسلم وبارك على سيدنا محمد ", count: 3 },
             { text: "اللهم اني اعوذ بك ان اشرك بك شيئا نعلمه واستغفرك لما لا اعلمه    ", count: 3 },
             { text: "يارب لك الحمد كما ينبغي لجلال وجهك وعظيم سلطانك   ", count: 3 },
@@ -2765,8 +3024,22 @@
                 sleepAdhkar: true,
                 tasbeeh: true,
                 dua: true
-            }
+            },
+            updateSettings: {
+                autoUpdate: true,
+                updateNotifications: true,
+                autoBackup: true
+            },
+            lastUpdateCheck: null,
+            lastUpdateDate: null,
+            appVersion: '1.0.0'
         };
+        
+        // بيانات نظام التحديثات
+        let appVersion = '1.0.0';
+        let newUpdateAvailable = false;
+        let registration = null;
+        let updateCheckInProgress = false;
         
         // دالة تحميل بيانات الإحصائيات
         function loadStatisticsData() {
@@ -3018,14 +3291,16 @@
             }
         }
         
-        // دالة لتسجيل Service Worker
+        // ============ نظام التحديثات التلقائية ============
+        
+        // دالة تسجيل Service Worker
         async function registerServiceWorker() {
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
+            if ('serviceWorker' in navigator) {
                 try {
                     const registration = await navigator.serviceWorker.register('sw.js');
                     console.log('Service Worker registered successfully:', registration);
                     
-                    updateServiceWorkerStatus('✅ تم تحميل خدمة الإشعارات بنجاح');
+                    updateServiceWorkerStatus('✅ تم تحميل خدمة الإشعارات والتحديثات بنجاح');
                     
                     setTimeout(() => {
                         document.getElementById('serviceWorkerStatus').classList.remove('active');
@@ -3040,8 +3315,8 @@
                     return null;
                 }
             } else {
-                console.log('Push notifications are not supported in this browser');
-                updateServiceWorkerStatus('⚠️ المتصفح لا يدعم الإشعارات الدفعية');
+                console.log('Service Worker is not supported in this browser');
+                updateServiceWorkerStatus('⚠️ المتصفح لا يدعم خدمة التحديثات التلقائية');
                 return null;
             }
         }
@@ -3053,6 +3328,375 @@
             
             messageElement.textContent = message;
             statusElement.classList.add('active');
+        }
+        
+        // دالة تسجيل Service Worker للتحديثات
+        async function registerServiceWorkerForUpdates() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    registration = await navigator.serviceWorker.register('sw.js');
+                    
+                    console.log('Service Worker registered for updates');
+                    
+                    // تحديث معلومات الإصدار
+                    updateVersionInfo();
+                    
+                    // التحقق من التحديثات فور التسجيل
+                    checkForUpdates();
+                    
+                    // إضافة مستمع للتحديثات
+                    registration.addEventListener('updatefound', () => {
+                        console.log('Update found in Service Worker!');
+                        
+                        const newWorker = registration.installing;
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                    
+                    // استقبال الرسائل من Service Worker
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                            showUpdateNotification();
+                        }
+                    });
+                    
+                    // التحقق من التحديثات كل ساعة
+                    setInterval(checkForUpdates, 60 * 60 * 1000);
+                    
+                    // التحقق من التحديثات عند التركيز على الصفحة
+                    window.addEventListener('focus', checkForUpdates);
+                    
+                } catch (error) {
+                    console.error('Service Worker registration failed:', error);
+                }
+            }
+        }
+        
+        // دالة التحقق من التحديثات
+        async function checkForUpdates() {
+            if (updateCheckInProgress) {
+                console.log('Update check already in progress');
+                return;
+            }
+            
+            updateCheckInProgress = true;
+            
+            try {
+                // تحديث حالة الزر
+                const checkBtn = document.getElementById('checkUpdateBtn');
+                const originalText = checkBtn.innerHTML;
+                checkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+                checkBtn.disabled = true;
+                
+                // تحديث حالة التحديث في الواجهة
+                document.getElementById('updateStatus').textContent = 'جارٍ التحقق...';
+                document.getElementById('updateStatus').className = 'status-checking';
+                
+                // التحقق من تحديث Service Worker
+                if (registration) {
+                    await registration.update();
+                }
+                
+                // التحقق من نسخة الموقع
+                const siteVersion = await checkSiteVersion();
+                
+                // تحديث سجل آخر فحص
+                const now = new Date();
+                appState.lastUpdateCheck = now.toISOString();
+                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+                
+                document.getElementById('lastCheckDate').textContent = now.toLocaleString('ar-SA');
+                
+                if (siteVersion !== appVersion) {
+                    console.log(`New version detected: ${siteVersion} (current: ${appVersion})`);
+                    
+                    // عرض زر التحديث
+                    document.getElementById('applyUpdateBtn').style.display = 'inline-block';
+                    
+                    // تحديث الحالة
+                    document.getElementById('updateStatus').textContent = 'يتوفر تحديث جديد';
+                    document.getElementById('updateStatus').className = 'status-available';
+                    
+                    // عرض تفاصيل التحديث
+                    document.getElementById('updateDetails').style.display = 'block';
+                    
+                    newUpdateAvailable = true;
+                    
+                    // إظهار إشعار إذا كان مفعلاً
+                    if (appState.updateSettings.updateNotifications) {
+                        showUpdateNotification();
+                    }
+                    
+                } else {
+                    console.log('App is up to date');
+                    
+                    document.getElementById('applyUpdateBtn').style.display = 'none';
+                    document.getElementById('updateDetails').style.display = 'none';
+                    
+                    document.getElementById('updateStatus').textContent = 'التطبيق محدث';
+                    document.getElementById('updateStatus').className = 'status-updated';
+                    
+                    newUpdateAvailable = false;
+                }
+                
+            } catch (error) {
+                console.error('Error checking for updates:', error);
+                
+                document.getElementById('updateStatus').textContent = 'فشل التحقق من التحديثات';
+                document.getElementById('updateStatus').className = 'status-error';
+                
+            } finally {
+                updateCheckInProgress = false;
+                
+                // استعادة حالة الزر
+                const checkBtn = document.getElementById('checkUpdateBtn');
+                checkBtn.innerHTML = originalText;
+                checkBtn.disabled = false;
+            }
+        }
+        
+        // دالة التحقق من إصدار الموقع
+        async function checkSiteVersion() {
+            try {
+                // جلب الصفحة مع منع الكاش للتأكد من الحصول على أحدث نسخة
+                const response = await fetch(`/?v=${Date.now()}`, { cache: 'no-store' });
+                const text = await response.text();
+                
+                // البحث عن إصدار الموقع في التعليق
+                const versionMatch = text.match(/<!-- APP_VERSION:(\d+\.\d+\.\d+) -->/);
+                const siteVersion = versionMatch ? versionMatch[1] : appVersion;
+                
+                return siteVersion;
+            } catch (error) {
+                console.error('Error checking site version:', error);
+                return appVersion;
+            }
+        }
+        
+        // دالة عرض إشعار التحديث
+        function showUpdateNotification() {
+            newUpdateAvailable = true;
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification update-notification';
+            notification.innerHTML = `
+                <i class="fas fa-sync-alt"></i>
+                <div class="notification-content">
+                    <h4>تحديث جديد متاح!</h4>
+                    <p>تم اكتشاف نسخة جديدة من التطبيق. اضغط لتحديث الآن.</p>
+                </div>
+                <button class="notification-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            notification.style.cursor = 'pointer';
+            notification.addEventListener('click', () => {
+                showSection('updates');
+                notification.remove();
+            });
+            
+            document.getElementById('notifications').appendChild(notification);
+        }
+        
+        // دالة تطبيق التحديث
+        function applyUpdate() {
+            if (!registration || !registration.waiting) {
+                showNotification("لا يوجد تحديث", "التطبيق محدث بالفعل", "info");
+                return;
+            }
+            
+            // عرض مؤشر التحديث
+            document.getElementById('updatingIndicator').classList.add('show');
+            
+            // حفظ نسخة احتياطية من البيانات
+            if (appState.updateSettings.autoBackup) {
+                createBackup();
+            }
+            
+            // إرسال رسالة إلى Service Worker لتفعيل التحديث
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            
+            // تحديث حالة الزر
+            const updateBtn = document.getElementById('applyUpdateBtn');
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديث...';
+            updateBtn.disabled = true;
+            
+            // إعادة تحميل الصفحة بعد 3 ثوان
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+            
+            showNotification("جاري التحديث", "سيتم تحديث التطبيق خلال لحظات", "info");
+        }
+        
+        // دالة إعادة تحميل قسري
+        function forceReload() {
+            if (confirm("هل تريد إعادة تحميل الصفحة؟ هذا قد يساعد في حل مشاكل التحميل.")) {
+                window.location.reload();
+            }
+        }
+        
+        // دالة حفظ إعدادات التحديث
+        function saveUpdateSettings() {
+            appState.updateSettings.autoUpdate = document.getElementById('autoUpdateSwitch').checked;
+            appState.updateSettings.updateNotifications = document.getElementById('updateNotificationSwitch').checked;
+            appState.updateSettings.autoBackup = document.getElementById('autoBackupSwitch').checked;
+            
+            localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+            
+            showNotification("تم الحفظ", "تم حفظ إعدادات التحديثات بنجاح", "success");
+        }
+        
+        // دالة تحميل إعدادات التحديث
+        function loadUpdateSettings() {
+            if (document.getElementById('autoUpdateSwitch')) {
+                document.getElementById('autoUpdateSwitch').checked = appState.updateSettings.autoUpdate;
+                document.getElementById('updateNotificationSwitch').checked = appState.updateSettings.updateNotifications;
+                document.getElementById('autoBackupSwitch').checked = appState.updateSettings.autoBackup;
+                
+                // تحديث معلومات الإصدار
+                updateVersionInfo();
+                
+                // تحديث سجل آخر فحص
+                if (appState.lastUpdateCheck) {
+                    const lastCheck = new Date(appState.lastUpdateCheck);
+                    document.getElementById('lastCheckDate').textContent = lastCheck.toLocaleString('ar-SA');
+                }
+                
+                if (appState.lastUpdateDate) {
+                    const lastUpdate = new Date(appState.lastUpdateDate);
+                    document.getElementById('lastUpdateDate').textContent = lastUpdate.toLocaleString('ar-SA');
+                }
+            }
+        }
+        
+        // دالة تحديث معلومات الإصدار
+        function updateVersionInfo() {
+            document.getElementById('currentVersion').textContent = appVersion;
+            document.getElementById('versionInfo').textContent = `الإصدار: ${appVersion}`;
+            
+            // تحديث معلومات التطبيق
+            if (!appState.lastUpdateDate) {
+                appState.lastUpdateDate = new Date().toISOString();
+                localStorage.setItem('ramadanAppState', JSON.stringify(appState));
+            }
+        }
+        
+        // دالة إنشاء نسخة احتياطية
+        function createBackup() {
+            const backupData = {
+                appState: localStorage.getItem('ramadanAppState'),
+                statisticsData: localStorage.getItem('ramadanStatisticsData'),
+                timestamp: new Date().toISOString(),
+                version: appVersion
+            };
+            
+            localStorage.setItem('ramadanAppBackup', JSON.stringify(backupData));
+            
+            // تحديث واجهة المعلومات
+            const backupInfo = document.getElementById('backupInfo');
+            const backupDetails = document.getElementById('backupDetails');
+            
+            if (backupInfo && backupDetails) {
+                backupInfo.style.display = 'block';
+                backupDetails.innerHTML = `
+                    <p><strong>تاريخ النسخة:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                    <p><strong>حجم البيانات:</strong> ${JSON.stringify(backupData).length} بايت</p>
+                    <p><strong>الإصدار:</strong> ${appVersion}</p>
+                `;
+            }
+            
+            showNotification("تم النسخ الاحتياطي", "تم حفظ نسخة احتياطية من بياناتك", "success");
+            
+            return backupData;
+        }
+        
+        // دالة استعادة من نسخة احتياطية
+        function restoreFromBackup() {
+            const backup = localStorage.getItem('ramadanAppBackup');
+            
+            if (!backup) {
+                showNotification("لا توجد نسخة", "لا توجد نسخة احتياطية للاستعادة", "warning");
+                return;
+            }
+            
+            if (confirm("هل تريد استعادة البيانات من النسخة الاحتياطية؟ سيتم استبدال البيانات الحالية.")) {
+                try {
+                    const backupData = JSON.parse(backup);
+                    
+                    if (backupData.appState) {
+                        localStorage.setItem('ramadanAppState', backupData.appState);
+                    }
+                    
+                    if (backupData.statisticsData) {
+                        localStorage.setItem('ramadanStatisticsData', backupData.statisticsData);
+                    }
+                    
+                    showNotification("تم الاستعادة", "تم استعادة البيانات بنجاح", "success");
+                    
+                    // إعادة تحميل الصفحة لتطبيق التغييرات
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Error restoring backup:', error);
+                    showNotification("خطأ", "فشل استعادة النسخة الاحتياطية", "error");
+                }
+            }
+        }
+        
+        // دالة تحميل النسخة الاحتياطية
+        function downloadBackup() {
+            const backup = localStorage.getItem('ramadanAppBackup');
+            
+            if (!backup) {
+                showNotification("لا توجد نسخة", "لا توجد نسخة احتياطية للتحميل", "warning");
+                return;
+            }
+            
+            try {
+                const backupData = JSON.parse(backup);
+                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                a.href = url;
+                a.download = `ramadan-app-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification("تم التحميل", "تم تحميل النسخة الاحتياطية بنجاح", "success");
+                
+            } catch (error) {
+                console.error('Error downloading backup:', error);
+                showNotification("خطأ", "فشل تحميل النسخة الاحتياطية", "error");
+            }
+        }
+        
+        // دالة لعرض قسم التحديثات
+        function showUpdatesSection() {
+            loadUpdateSettings();
+            
+            // التحقق التلقائي من التحديثات إذا مضى أكثر من يوم
+            if (appState.lastUpdateCheck) {
+                const lastCheck = new Date(appState.lastUpdateCheck);
+                const now = new Date();
+                const diffHours = (now - lastCheck) / (1000 * 60 * 60);
+                
+                if (diffHours > 24 && appState.updateSettings.autoUpdate) {
+                    checkForUpdates();
+                }
+            } else {
+                checkForUpdates();
+            }
         }
         
         // دالة لطلب إذن الإشعارات
@@ -3731,6 +4375,8 @@
                 updateNotificationStatus();
             } else if (sectionId === 'statistics') {
                 showStatisticsSection();
+            } else if (sectionId === 'updates') {
+                showUpdatesSection();
             }
         }
         
@@ -4046,7 +4692,7 @@
             document.getElementById('overallQuranProgress').textContent = `${Math.round(overallProgress)}%`;
             document.getElementById('overallQuranProgressBar').style.width = `${overallProgress}%`;
             
-            plan.forEach((dayPlan, index) => {
+            plan.forEach((dayPlan, index) {
                 const row = document.createElement('tr');
                 
                 const isToday = (index + 1) === currentDay;
@@ -4228,7 +4874,8 @@
                 planTable.appendChild(row);
             });
         }
-                // دالة تبديل حالة يوم الحفظ
+        
+        // دالة تبديل حالة يوم الحفظ
         function toggleMemorizationDay(index) {
             if (!appState.memorizationPlan) return;
             
@@ -4537,7 +5184,8 @@
                 challengesList.appendChild(challengeItem);
             }
         }
-                // دالة الحصول على وصف التحدي
+        
+        // دالة الحصول على وصف التحدي
         function getChallengeDescription(challenge) {
             const descriptions = {
                 "عدم مشاهدة المسلسلات": "تحدي اليوم هو الامتناع عن مشاهدة المسلسلات التلفزيونية طول اليوم وتخصيص هذا الوقت للعبادة وقراءة القرآن.",
@@ -4822,168 +5470,133 @@
         }
         
         // دالة تهيئة التطبيق
-                        async function initializeApp() {
-    // ⭐⭐⭐⭐⭐⭐ حل التحديث التلقائي - معدل ⭐⭐⭐⭐⭐⭐
-    const APP_VERSION = "2026-02-08-v1"; // غيّر هذا عند كل تعديل
-    
-    try {
-        const SAVED_VERSION = localStorage.getItem('appVersion');
-        
-        // التحقق من الإصدار
-        if (SAVED_VERSION !== APP_VERSION) {
-            console.log(`🔄 تحديث مطلوب: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
+        async function initializeApp() {
+            // التحقق من وجود نسخة احتياطية واستعادتها إذا لزم الأمر
+            const backup = localStorage.getItem('ramadanAppBackup');
+            const currentState = localStorage.getItem('ramadanAppState');
             
-            // حفظ الإحصائيات القديمة مؤقتاً
-            const oldStats = localStorage.getItem('ramadanStatisticsData');
-            
-            // مسح البيانات القديمة
-            const keysToKeep = ['ramadanStatisticsData']; // نحتفظ بالإحصائيات
-            const allKeys = Object.keys(localStorage);
-            
-            for (const key of allKeys) {
-                if (!keysToKeep.includes(key)) {
-                    localStorage.removeItem(key);
+            if (backup && (!currentState || currentState === '{}' || currentState === 'null')) {
+                try {
+                    const backupData = JSON.parse(backup);
+                    if (backupData.appState) {
+                        localStorage.setItem('ramadanAppState', backupData.appState);
+                        console.log('User data restored from backup');
+                    }
+                } catch (e) {
+                    console.error('Error restoring from backup:', e);
                 }
             }
             
-            // حفظ الإصدار الجديد
-            localStorage.setItem('appVersion', APP_VERSION);
+            // تحميل حالة التطبيق
+            const savedState = localStorage.getItem('ramadanAppState');
+            if (savedState) {
+                try {
+                    appState = JSON.parse(savedState);
+                    userName = appState.userName || "";
+                    currentDay = appState.currentDay || 1;
+                    currentTasbeehIndex = currentDay - 1;
+                    
+                    // تحديث إصدار التطبيق
+                    appVersion = appState.appVersion || '1.0.0';
+                    
+                    // تهيئة المصفوفات إذا كانت غير موجودة
+                    if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
+                        appState.tasbeehCounts = Array(30).fill(0);
+                    }
+                    if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
+                        appState.tasbeehCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
+                        appState.tasksCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
+                        appState.duasCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
+                        appState.hadithsCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
+                        appState.challengesCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
+                        appState.quranPartsCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
+                        appState.memorizationCompleted = Array(30).fill(false);
+                    }
+                    if (!appState.personalDuas) {
+                        appState.personalDuas = [];
+                    }
+                    if (!appState.notifications) {
+                        appState.notifications = {
+                            prayer: true,
+                            morningAdhkar: true,
+                            eveningAdhkar: true,
+                            sleepAdhkar: true,
+                            tasbeeh: true,
+                            dua: true
+                        };
+                    }
+                    if (!appState.updateSettings) {
+                        appState.updateSettings = {
+                            autoUpdate: true,
+                            updateNotifications: true,
+                            autoBackup: true
+                        };
+                    }
+                } catch (e) {
+                    console.error("خطأ في تحميل الحالة:", e);
+                }
+            }
             
-            // إعادة تحميل إذا كان هناك نسخة قديمة
-            if (SAVED_VERSION) {
-                console.log("🔄 إعادة تحميل للتحديث...");
-                setTimeout(() => {
-                    window.location.href = window.location.pathname + '?v=' + Date.now();
-                }, 100);
-                return;
-            }
-            // إذا كان أول مرة، نكمل التنفيذ
-        }
-    } catch (e) {
-        console.error("خطأ في التحقق من الإصدار:", e);
-    }
-    // ⭐⭐⭐⭐⭐⭐ نهاية حل التحديث التلقائي ⭐⭐⭐⭐⭐⭐
-    
-    // الكود الأصلي يبدأ من هنا
-    const savedState = localStorage.getItem('ramadanAppState');
-    if (savedState) {
-        try {
-            appState = JSON.parse(savedState);
-            userName = appState.userName || "";
-            currentDay = appState.currentDay || 1;
-            currentTasbeehIndex = currentDay - 1;
+            checkDayChange();
             
-            // ... باقي الكود كما هو بدون تغيير
-            if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
-                appState.tasbeehCounts = Array(30).fill(0);
+            if (userName) {
+                document.getElementById('userSetupModal').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                updateUI();
+                
+                setupRamadanDateInfo();
+                updateRamadanDayNote();
+            } else {
+                document.getElementById('userSetupModal').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'none';
+                
+                setupRamadanDateInfo();
+                updateRamadanDayNote();
             }
-            if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
-                appState.tasbeehCompleted = Array(30).fill(false);
-            }
-            if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
-                appState.tasksCompleted = Array(30).fill(false);
-            }
-            if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
-                appState.duasCompleted = Array(30).fill(false);
-            }
-            if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
-                appState.hadithsCompleted = Array(30).fill(false);
-            }
-            if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
-                appState.challengesCompleted = Array(30).fill(false);
-            }
-            if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
-                appState.quranPartsCompleted = Array(30).fill(false);
-            }
-            if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
-                appState.memorizationCompleted = Array(30).fill(false);
-            }
-            if (!appState.personalDuas) {
-                appState.personalDuas = [];
-            }
-            if (!appState.notifications) {
-                appState.notifications = {
-                    prayer: true,
-                    morningAdhkar: true,
-                    eveningAdhkar: true,
-                    sleepAdhkar: true,
-                    tasbeeh: true,
-                    dua: true
-                };
-            }
-        } catch (e) {
-            console.error("خطأ في تحميل الحالة:", e);
-            // في حالة الخطأ، نعرض شاشة الإعداد
-            showSetupScreen();
-        }
-    } else {
-        // إذا لم توجد بيانات، نعرض شاشة الإعداد
-        showSetupScreen();
-    }
-    
-    // إذا لم يتم تعيين userName بعد، نعرض شاشة الإعداد
-    if (!userName) {
-        showSetupScreen();
-    }
-    
-    checkDayChange();
-    
-    if (userName) {
-        document.getElementById('userSetupModal').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        updateUI();
-        
-        setupRamadanDateInfo();
-        updateRamadanDayNote();
-    } else {
-        document.getElementById('userSetupModal').style.display = 'block';
-        document.getElementById('mainContent').style.display = 'none';
-        
-        setupRamadanDateInfo();
-        updateRamadanDayNote();
-    }
-    
-    initializeTopNav();
-    
-    setupRealTimeClock();
-    
-    setupAutoDateUpdate();
-    
-    // تحميل بيانات الإحصائيات
-    loadStatisticsData();
+            
+            initializeTopNav();
+            
+            setupRealTimeClock();
+            
+            setupAutoDateUpdate();
+            
+            // تحميل بيانات الإحصائيات
+            loadStatisticsData();
 
-    // تسجيل الزائر الحالي
-    if (userName) {
-        registerVisitor(userName, currentDay);
-    } else {
-        registerVisitor("زائر", currentDay);
-    }
-    
-    // تسجيل Service Worker وطلب إذن الإشعارات
-    try {
-        await registerServiceWorker();
-    } catch (e) {
-        console.error("خطأ في تسجيل Service Worker:", e);
-    }
-    
-    // عرض نافذة طلب الإذن بعد 3 ثوان إذا لم يكن هناك إذن مسبق
-    setTimeout(() => {
-        if (Notification.permission === 'default') {
-            document.getElementById('permissionModal').style.display = 'flex';
-        } else if (Notification.permission === 'granted') {
-            notificationPermission = true;
-            startNotificationSchedule();
-        }
-    }, 3000);
-}
-
-// دالة مساعدة لعرض شاشة الإعداد
-function showSetupScreen() {
-    document.getElementById('userSetupModal').style.display = 'block';
-    document.getElementById('mainContent').style.display = 'none';
-    setupRamadanDateInfo();
-    updateRamadanDayNote();
-} 
+            // تسجيل الزائر الحالي
+            if (userName) {
+                registerVisitor(userName, currentDay);
+            } else {
+                registerVisitor("زائر", currentDay);
+            }
+            
+            // تسجيل Service Worker للتحديثات والإشعارات
+            await registerServiceWorkerForUpdates();
+            
+            // تسجيل Service Worker للإشعارات
+            await registerServiceWorker();
+            
+            // عرض نافذة طلب الإذن بعد 3 ثوان إذا لم يكن هناك إذن مسبق
+            setTimeout(() => {
+                if (Notification.permission === 'default') {
+                    document.getElementById('permissionModal').style.display = 'flex';
+                } else if (Notification.permission === 'granted') {
+                    notificationPermission = true;
+                    startNotificationSchedule();
+                }
+            }, 3000);
             
             // إضافة مستمعي أحداث لأزرار نافذة الإذن
             document.getElementById('allowNotifications').addEventListener('click', async () => {
@@ -4996,6 +5609,7 @@ function showSetupScreen() {
                 showNotification("تم الحفظ", "يمكنك تفعيل الإشعارات لاحقاً من إعدادات التطبيق", "info");
             });
             
+            // إعداد تفاعلية عداد التسبيح
             const counterDisplay = document.getElementById('counterDisplay');
             if (counterDisplay) {
                 let touchStartY = 0;
@@ -5073,6 +5687,13 @@ function showSetupScreen() {
                 });
             }
             
+            // إنشاء نسخة احتياطية تلقائية
+            setTimeout(() => {
+                if (appState.updateSettings.autoBackup) {
+                    createBackup();
+                }
+            }, 10000);
+            
             showDebugInfo();
         }
         
@@ -5081,6 +5702,3 @@ function showSetupScreen() {
     </script>
 </body>
 </html>
-
-
-
