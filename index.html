@@ -4822,169 +4822,177 @@
         }
         
         // دالة تهيئة التطبيق
-        async function initializeApp() {
-        
-    const APP_VERSION = "1.0.1";
-    const SAVED_VERSION = localStorage.getItem('ramadanAppVersion');
+                          async function initializeApp() {
+    // ⭐⭐⭐⭐⭐⭐ حل التحديث التلقائي ⭐⭐⭐⭐⭐⭐
+    const APP_VERSION = "2026-02-08-v2"; // غيّر هذا عند كل تعديل للكود
+    const SAVED_VERSION = localStorage.getItem('appVersion');
     
+    // إذا كان الإصدار مختلف أو لم يكن هناك إصدار
     if (SAVED_VERSION !== APP_VERSION) {
-        console.log(`🔄 تحديث التطبيق: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
+        console.log(`🔄 تحديث مطلوب: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
         
-        // حفظ البيانات المهمة مؤقتاً
-        const importantData = {
-            statistics: localStorage.getItem('ramadanStatisticsData'),
-            userName: localStorage.getItem('lastUserName'),
-            currentDay: localStorage.getItem('lastCurrentDay')
-        };
-        
-        // مسح جميع البيانات عدا المفتاح الذي يحفظ البيانات المهمة مؤقتاً
-        const tempKey = `temp_backup_${Date.now()}`;
-        localStorage.setItem(tempKey, JSON.stringify(importantData));
-        
-        // مسح جميع البيانات القديمة
-        const keysToKeep = [tempKey];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!keysToKeep.includes(key)) {
-                localStorage.removeItem(key);
-            }
-        }
-        
-        // حفظ الإصدار الجديد
-        localStorage.setItem('ramadanAppVersion', APP_VERSION);
-        
-        // استعادة البيانات المهمة
         try {
-            const savedData = JSON.parse(localStorage.getItem(tempKey) || '{}');
+            // حفظ الإحصائيات فقط إذا وجدت
+            const oldStats = localStorage.getItem('ramadanStatisticsData');
             
-            if (savedData.statistics) {
-                localStorage.setItem('ramadanStatisticsData', savedData.statistics);
+            // مسح جميع البيانات عدا الإحصائيات مؤقتاً
+            const backupData = { statistics: oldStats };
+            
+            // مسح localStorage مع الاحتفاظ ببعض البيانات إذا أردت
+            const keysToRemove = Object.keys(localStorage).filter(key => 
+                key !== 'ramadanStatisticsData' && 
+                !key.startsWith('temp_')
+            );
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
+            // حفظ الإصدار الجديد
+            localStorage.setItem('appVersion', APP_VERSION);
+            
+            // استعادة الإحصائيات إذا أردت
+            if (oldStats) {
+                try {
+                    localStorage.setItem('ramadanStatisticsData', oldStats);
+                } catch (e) {
+                    console.log("لا يمكن استعادة الإحصائيات");
+                }
             }
-            if (savedData.userName) {
-                localStorage.setItem('lastUserName', savedData.userName);
+            
+            // إعادة تحميل الصفحة مع بارامتر عشوائي لمنع cache
+            setTimeout(() => {
+                if (!window.location.search.includes('nocache')) {
+                    window.location.href = window.location.pathname + '?nocache=' + Date.now();
+                } else {
+                    location.reload(true);
+                }
+            }, 500);
+            
+            return; // إيقاف تنفيذ باقي الكود
+        } catch (e) {
+            console.error("خطأ في التحديث:", e);
+        }
+    }
+    // ⭐⭐⭐⭐⭐⭐ نهاية حل التحديث التلقائي ⭐⭐⭐⭐⭐⭐
+    
+    const savedState = localStorage.getItem('ramadanAppState');
+    if (savedState) {
+        try {
+            appState = JSON.parse(savedState);
+            userName = appState.userName || "";
+            currentDay = appState.currentDay || 1;
+            currentTasbeehIndex = currentDay - 1;
+            
+            if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
+                appState.tasbeehCounts = Array(30).fill(0);
             }
-            if (savedData.currentDay) {
-                localStorage.setItem('lastCurrentDay', savedData.currentDay);
+            if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
+                appState.tasbeehCompleted = Array(30).fill(false);
+            }
+            if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
+                appState.tasksCompleted = Array(30).fill(false);
+            }
+            if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
+                appState.duasCompleted = Array(30).fill(false);
+            }
+            if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
+                appState.hadithsCompleted = Array(30).fill(false);
+            }
+            if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
+                appState.challengesCompleted = Array(30).fill(false);
+            }
+            if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
+                appState.quranPartsCompleted = Array(30).fill(false);
+            }
+            if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
+                appState.memorizationCompleted = Array(30).fill(false);
+            }
+            if (!appState.personalDuas) {
+                appState.personalDuas = [];
+            }
+            if (!appState.notifications) {
+                appState.notifications = {
+                    prayer: true,
+                    morningAdhkar: true,
+                    eveningAdhkar: true,
+                    sleepAdhkar: true,
+                    tasbeeh: true,
+                    dua: true
+                };
             }
         } catch (e) {
-            console.log("❌ خطأ في استعادة البيانات:", e);
+            console.error("خطأ في تحميل الحالة:", e);
+            // في حالة الخطأ، نمسح البيانات القديمة
+            localStorage.removeItem('ramadanAppState');
         }
+    }
+    
+    checkDayChange();
+    
+    if (userName) {
+        document.getElementById('userSetupModal').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        updateUI();
         
-        // مسح النسخة الاحتياطية المؤقتة
-        localStorage.removeItem(tempKey);
+        setupRamadanDateInfo();
+        updateRamadanDayNote();
+    } else {
+        document.getElementById('userSetupModal').style.display = 'block';
+        document.getElementById('mainContent').style.display = 'none';
         
-        // إظهار رسالة للمستخدم
-        const updateMessages = [
-            "✨ تم تحديث التطبيق بنجاح!",
-            "🔄 جارٍ تحميل الإصدار الجديد...",
-            "⚡ تحسينات جديدة في الطريق إليك!"
-        ];
-        
-        const randomMessage = updateMessages[Math.floor(Math.random() * updateMessages.length)];
-        alert(randomMessage);
-        
-        // إعادة تحميل الصفحة
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
-        return;
-    }.
-            }
-            const savedState = localStorage.getItem('ramadanAppState');
-            if (savedState) {
-                try {
-                    appState = JSON.parse(savedState);
-                    userName = appState.userName || "";
-                    currentDay = appState.currentDay || 1;
-                    currentTasbeehIndex = currentDay - 1;
-                    
-                    if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
-                        appState.tasbeehCounts = Array(30).fill(0);
-                    }
-                    if (!appState.tasbeehCompleted || appState.tasbeehCompleted.length !== 30) {
-                        appState.tasbeehCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.tasksCompleted || appState.tasksCompleted.length !== 30) {
-                        appState.tasksCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.duasCompleted || appState.duasCompleted.length !== 30) {
-                        appState.duasCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.hadithsCompleted || appState.hadithsCompleted.length !== 30) {
-                        appState.hadithsCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.challengesCompleted || appState.challengesCompleted.length !== 30) {
-                        appState.challengesCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.quranPartsCompleted || appState.quranPartsCompleted.length !== 30) {
-                        appState.quranPartsCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.memorizationCompleted || appState.memorizationCompleted.length !== 30) {
-                        appState.memorizationCompleted = Array(30).fill(false);
-                    }
-                    if (!appState.personalDuas) {
-                        appState.personalDuas = [];
-                    }
-                    if (!appState.notifications) {
-                        appState.notifications = {
-                            prayer: true,
-                            morningAdhkar: true,
-                            eveningAdhkar: true,
-                            sleepAdhkar: true,
-                            tasbeeh: true,
-                            dua: true
-                        };
-                    }
-                } catch (e) {
-                    console.error("خطأ في تحميل الحالة:", e);
-                }
-            }
-            
-            checkDayChange();
-            
-            if (userName) {
-                document.getElementById('userSetupModal').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                updateUI();
-                
-                setupRamadanDateInfo();
-                updateRamadanDayNote();
-            } else {
-                document.getElementById('userSetupModal').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'none';
-                
-                setupRamadanDateInfo();
-                updateRamadanDayNote();
-            }
-            
-            initializeTopNav();
-            
-            setupRealTimeClock();
-            
-            setupAutoDateUpdate();
-            
-            // تحميل بيانات الإحصائيات
-            loadStatisticsData();
+        setupRamadanDateInfo();
+        updateRamadanDayNote();
+    }
+    
+    initializeTopNav();
+    
+    setupRealTimeClock();
+    
+    setupAutoDateUpdate();
+    
+    // تحميل بيانات الإحصائيات
+    loadStatisticsData();
 
-            // تسجيل الزائر الحالي
-            if (userName) {
-                registerVisitor(userName, currentDay);
-            } else {
-                registerVisitor("زائر", currentDay);
+    // تسجيل الزائر الحالي
+    if (userName) {
+        registerVisitor(userName, currentDay);
+    } else {
+        registerVisitor("زائر", currentDay);
+    }
+    
+    // تسجيل Service Worker وطلب إذن الإشعارات
+    await registerServiceWorker();
+    
+    // عرض نافذة طلب الإذن بعد 3 ثوان إذا لم يكن هناك إذن مسبق
+    setTimeout(() => {
+        if (Notification.permission === 'default') {
+            document.getElementById('permissionModal').style.display = 'flex';
+        } else if (Notification.permission === 'granted') {
+            notificationPermission = true;
+            startNotificationSchedule();
+        }
+    }, 3000);
+    
+    // ⭐⭐⭐ إضافة مستمع لمسح cache عند العودة ⭐⭐⭐
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            // إذا كانت الصفحة من cache
+            console.log('🔄 الصفحة تم تحميلها من cache، التحقق من التحديثات');
+            if (localStorage.getItem('checkForUpdate') === 'true') {
+                localStorage.removeItem('checkForUpdate');
+                location.reload(true);
             }
-            
-            // تسجيل Service Worker وطلب إذن الإشعارات
-            await registerServiceWorker();
-            
-            // عرض نافذة طلب الإذن بعد 3 ثوان إذا لم يكن هناك إذن مسبق
-            setTimeout(() => {
-                if (Notification.permission === 'default') {
-                    document.getElementById('permissionModal').style.display = 'flex';
-                } else if (Notification.permission === 'granted') {
-                    notificationPermission = true;
-                    startNotificationSchedule();
-                }
-            }, 3000);
+        }
+    });
+    
+    // ⭐⭐⭐ التحقق من التحديثات كل 5 دقائق ⭐⭐⭐
+    setInterval(() => {
+        const currentVersion = localStorage.getItem('appVersion');
+        if (currentVersion !== APP_VERSION) {
+            console.log('🔄 تم اكتشاف إصدار جديد، سيتم التحديث عند التحميل القادم');
+            localStorage.setItem('checkForUpdate', 'true');
+        }
+    }, 5 * 60 * 1000); // كل 5 دقائق
+}      
             
             // إضافة مستمعي أحداث لأزرار نافذة الإذن
             document.getElementById('allowNotifications').addEventListener('click', async () => {
@@ -5082,4 +5090,5 @@
     </script>
 </body>
 </html>
+
 
