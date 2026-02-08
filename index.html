@@ -2456,6 +2456,411 @@
     </div>
 
     <script>
+        // ====== نظام التحديثات التلقائي المحسن ======
+
+let appVersion = '1.0.0';
+let newUpdateAvailable = false;
+let registration = null;
+let updateCheckInterval = null;
+
+// دالة لتسجيل Service Worker
+async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            registration = await navigator.serviceWorker.register('sw.js');
+            console.log('✅ Service Worker مسجل بنجاح');
+            return registration;
+        } catch (error) {
+            console.error('❌ فشل تسجيل Service Worker:', error);
+            return null;
+        }
+    }
+    return null;
+}
+
+// دالة التحقق من التحديثات
+async function checkForUpdates() {
+    console.log('🔄 جاري التحقق من التحديثات...');
+    
+    try {
+        // 1. التحقق من Service Worker
+        if (registration) {
+            await registration.update();
+        }
+        
+        // 2. التحقق من نسخة الموقع
+        const response = await fetch(`/?v=${Date.now()}&check=update`, { 
+            cache: 'no-store',
+            headers: {
+                'Pragma': 'no-cache',
+                'Cache-Control': 'no-cache'
+            }
+        });
+        
+        if (!response.ok) {
+            console.error('❌ فشل جلب الموقع');
+            return;
+        }
+        
+        const html = await response.text();
+        
+        // 3. البحث عن إصدار الموقع
+        const versionMatch = html.match(/<!-- APP_VERSION:(\d+\.\d+\.\d+) -->/);
+        if (!versionMatch) {
+            console.log('⚠️ لم يتم العثور على إصدار في الموقع');
+            return;
+        }
+        
+        const siteVersion = versionMatch[1];
+        console.log(`📊 إصدار الموقع: ${siteVersion}, إصدار التطبيق: ${appVersion}`);
+        
+        // 4. إذا كان هناك تحديث جديد
+        if (siteVersion !== appVersion) {
+            console.log(`🎉 تم اكتشاف تحديث جديد: ${siteVersion}`);
+            newUpdateAvailable = true;
+            
+            // حفظ الإصدار الجديد
+            appVersion = siteVersion;
+            localStorage.setItem('appVersion', appVersion);
+            
+            // عرض إشعار التحديث
+            showUpdateNotification(siteVersion);
+            
+            // إذا كان المستخدم متصل أكثر من 5 دقائق، تحديث تلقائي
+            setTimeout(() => {
+                if (newUpdateAvailable) {
+                    autoUpdateIfIdle();
+                }
+            }, 5 * 60 * 1000); // بعد 5 دقائق
+        }
+        
+    } catch (error) {
+        console.error('❌ خطأ في التحقق من التحديثات:', error);
+    }
+}
+
+// دالة عرض إشعار التحديث
+function showUpdateNotification(newVersion) {
+    // إزالة أي إشعارات قديمة
+    const oldNotifications = document.querySelectorAll('.update-notification');
+    oldNotifications.forEach(notification => notification.remove());
+    
+    // إنشاء إشعار جديد
+    const notification = document.createElement('div');
+    notification.className = 'notification update-notification';
+    notification.innerHTML = `
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <div class="notification-content">
+            <h4>تحديث جديد متاح! (${newVersion})</h4>
+            <p>تم اكتشاف نسخة جديدة من التطبيق. اضغط لتحديث الآن.</p>
+            <div style="margin-top: 10px;">
+                <button class="update-button" onclick="applyUpdateNow()" style="margin-left: 10px;">
+                    <i class="fas fa-download"></i> تحديث الآن
+                </button>
+                <button class="btn btn-warning" onclick="remindLater()">
+                    <i class="fas fa-clock"></i> ذكرني لاحقاً
+                </button>
+            </div>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove(); newUpdateAvailable = false;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // إضافة التأثيرات
+    notification.style.animation = 'pulse 2s infinite';
+    notification.style.borderRight = '5px solid #FF9800';
+    notification.style.cursor = 'pointer';
+    
+    // عند النقر على الإشعار
+    notification.addEventListener('click', (e) => {
+        if (!e.target.closest('button')) {
+            applyUpdateNow();
+        }
+    });
+    
+    // إضافة إلى الصفحة
+    const notificationsContainer = document.getElementById('notifications');
+    if (notificationsContainer) {
+        notificationsContainer.appendChild(notification);
+    } else {
+        // إذا لم يكن هناك حاوية، ننشئ واحدة
+        const container = document.createElement('div');
+        container.className = 'notifications';
+        container.id = 'notifications';
+        container.style.position = 'fixed';
+        container.style.bottom = '20px';
+        container.style.left = '20px';
+        container.style.zIndex = '9999';
+        container.style.width = '350px';
+        container.appendChild(notification);
+        document.body.appendChild(container);
+    }
+    
+    // إرسال إشعار نظامي
+    if (Notification.permission === 'granted') {
+        new Notification('تحديث جديد متاح!', {
+            body: `إصدار ${newVersion} من تطبيق يومك في رمضان متاح الآن`,
+            icon: '/icon-192x192.png',
+            tag: 'update-notification'
+        });
+    }
+}
+
+// دالة التحديث الفوري
+function applyUpdateNow() {
+    if (!registration || !registration.waiting) {
+        // إعادة تحميل الصفحة مباشرة
+        window.location.reload();
+        return;
+    }
+    
+    // إرسال رسالة إلى Service Worker
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    
+    // عرض رسالة للمستخدم
+    showNotification("جاري التحديث", "سيتم تحديث التطبيق خلال 3 ثوانٍ", "info");
+    
+    // إعادة تحميل بعد 3 ثوانٍ
+    setTimeout(() => {
+        window.location.reload();
+    }, 3000);
+}
+
+// دالة التذكير لاحقاً
+function remindLater() {
+    const notification = document.querySelector('.update-notification');
+    if (notification) {
+        notification.remove();
+    }
+    
+    // إعادة التحقق بعد ساعة
+    setTimeout(checkForUpdates, 60 * 60 * 1000);
+    
+    showNotification("تم التأجيل", "سيتم تذكيرك بالتحديث بعد ساعة", "info");
+}
+
+// دالة التحديث التلقائي إذا كان المستخدم خاملاً
+function autoUpdateIfIdle() {
+    // إذا كان المستخدم خاملاً (لم يتحرك الماوس أو يضغط لوحة المفاتيح)
+    let isIdle = true;
+    let idleTimer;
+    
+    const resetIdleTimer = () => {
+        isIdle = false;
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            isIdle = true;
+            checkAndAutoUpdate();
+        }, 30000); // 30 ثانية من الخمول
+    };
+    
+    function checkAndAutoUpdate() {
+        if (isIdle && newUpdateAvailable) {
+            console.log('🤖 تحديث تلقائي (المستخدم خامل)');
+            applyUpdateNow();
+        }
+    }
+    
+    // متابعة نشاط المستخدم
+    document.addEventListener('mousemove', resetIdleTimer);
+    document.addEventListener('keydown', resetIdleTimer);
+    document.addEventListener('click', resetIdleTimer);
+    
+    resetIdleTimer();
+}
+
+// دالة بدء نظام التحديثات
+function startUpdateSystem() {
+    console.log('🚀 بدء نظام التحديثات التلقائي');
+    
+    // 1. تسجيل Service Worker
+    registerServiceWorker().then(reg => {
+        if (reg) {
+            // 2. التحقق من التحديثات فوراً
+            setTimeout(checkForUpdates, 2000);
+            
+            // 3. التحقق كل 30 دقيقة
+            updateCheckInterval = setInterval(checkForUpdates, 30 * 60 * 1000);
+            
+            // 4. التحقق عند إعادة الاتصال بالإنترنت
+            window.addEventListener('online', checkForUpdates);
+            
+            // 5. التحقق عند فتح التبويب
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    checkForUpdates();
+                }
+            });
+            
+            // 6. استماع لرسائل Service Worker
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                    newUpdateAvailable = true;
+                    showUpdateNotification(event.data.newVersion);
+                }
+                
+                if (event.data && event.data.type === 'RELOAD_PAGE') {
+                    window.location.reload();
+                }
+            });
+            
+            // 7. تحديث تلقائي عند إغلاق الصفحة
+            window.addEventListener('beforeunload', () => {
+                if (newUpdateAvailable && registration && registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+            });
+        }
+    });
+    
+    // 8. إضافة زر التحقق من التحديثات في القائمة
+    addUpdateButtonToMenu();
+}
+
+// دالة إضافة زر التحديثات في القائمة
+function addUpdateButtonToMenu() {
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu && !document.querySelector('a[href="#updates"]')) {
+        const updateItem = document.createElement('li');
+        updateItem.innerHTML = `
+            <a href="#updates" onclick="showUpdateSection()">
+                <i class="fas fa-sync-alt"></i> التحقق من التحديثات
+            </a>
+        `;
+        navMenu.appendChild(updateItem);
+    }
+}
+
+// دالة عرض قسم التحديثات
+function showUpdateSection() {
+    showNotification("التحديثات", "جاري التحقق من التحديثات...", "info");
+    checkForUpdates();
+}
+
+// ====== إضافة هذا في دالة initializeApp ======
+// ابحث عن دالة initializeApp وأضف في نهايتها:
+
+async function initializeApp() {
+    // ... كل الكود الأصلي ...
+    
+    // === أضف هذه السطور في النهاية ===
+    
+    // بدء نظام التحديثات (بعد 3 ثواني من التحميل)
+    setTimeout(startUpdateSystem, 3000);
+    
+    // تحديث معلومات الإصدار
+    const savedVersion = localStorage.getItem('appVersion');
+    if (savedVersion) {
+        appVersion = savedVersion;
+    }
+    updateVersionInfo();
+    
+    // التحقق من التحديثات عند فتح التطبيق
+    setTimeout(checkForUpdates, 5000);
+}
+
+// دالة تحديث معلومات الإصدار
+function updateVersionInfo() {
+    const versionElement = document.getElementById('versionInfo');
+    if (versionElement) {
+        versionElement.textContent = `v${appVersion}`;
+    } else {
+        // إنشاء عنصر إذا لم يكن موجوداً
+        const versionDiv = document.createElement('div');
+        versionDiv.className = 'version-info';
+        versionDiv.id = 'versionInfo';
+        versionDiv.textContent = `v${appVersion}`;
+        document.body.appendChild(versionDiv);
+    }
+}
+
+// ====== أضف هذا CSS إضافي ======
+// أضف في الـ style في الـ head:
+
+const updateCSS = `
+.update-notification {
+    background: linear-gradient(135deg, #fff8e1, #fff);
+    border-right: 5px solid #FF9800;
+    animation: pulse 2s infinite;
+    cursor: pointer;
+    max-width: 400px;
+}
+
+.update-notification:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.update-button {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.update-button:hover {
+    background: linear-gradient(135deg, #F57C00, #E65100);
+    transform: scale(1.05);
+}
+
+.version-info {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #8A2BE2, #6A0DAD);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(138, 43, 226, 0.3);
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.version-info:hover {
+    opacity: 1;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2); }
+    50% { box-shadow: 0 5px 25px rgba(255, 152, 0, 0.4); }
+    100% { box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2); }
+}
+
+.update-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4444;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+`;
+
+// إضافة الـ CSS إلى الصفحة
+const style = document.createElement('style');
+style.textContent = updateCSS;
+document.head.appendChild(style);
         // بيانات التطبيق
         let currentDay = 1;
         let userName = "";
@@ -2465,9 +2870,7 @@
         let notificationPermission = false;
         let serviceWorkerRegistered = false;
         let notificationTimer = null;
-        let appVersion = '1.2.0';
-        let newUpdateAvailable = false;
-        let registration = null;
+        
         const tasbeehat = [
             { text: "سبحان الله", count: 100 },
             { text: "الحمد لله", count: 100 },
@@ -5227,6 +5630,7 @@
     </script>
 </body>
 </html>
+
 
 
 
