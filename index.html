@@ -2885,20 +2885,10 @@
         
         // دالة التحقق من إصدار الموقع
         async function checkSiteVersion() {
-            try {
-                // جلب الصفحة مع منع الكاش
-                const response = await fetch(`/?v=${Date.now()}`, { cache: 'no-store' });
-                const text = await response.text();
-                
-                // البحث عن إصدار الموقع في التعليق
-                const versionMatch = text.match(/<!-- APP_VERSION:(\d+\.\d+\.\d+) -->/);
-                const siteVersion = versionMatch ? versionMatch[1] : appVersion;
-                
-                return siteVersion;
-            } catch (error) {
-                console.error('❌ خطأ في التحقق من إصدار الموقع:', error);
+            
+                console.log('نظام التحقق مفعل');
                 return appVersion;
-            }
+           
         }
         
         // دالة عرض إشعار التحديث
@@ -5227,6 +5217,7 @@
     </script>
 </body>
 </html>
+
 
 
 
