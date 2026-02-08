@@ -4822,58 +4822,49 @@
         }
         
         // دالة تهيئة التطبيق
-                          async function initializeApp() {
-    // ⭐⭐⭐⭐⭐⭐ حل التحديث التلقائي ⭐⭐⭐⭐⭐⭐
-    const APP_VERSION = "2026-02-08-v2"; // غيّر هذا عند كل تعديل للكود
-    const SAVED_VERSION = localStorage.getItem('appVersion');
+                        async function initializeApp() {
+    // ⭐⭐⭐⭐⭐⭐ حل التحديث التلقائي - معدل ⭐⭐⭐⭐⭐⭐
+    const APP_VERSION = "2026-02-08-v1"; // غيّر هذا عند كل تعديل
     
-    // إذا كان الإصدار مختلف أو لم يكن هناك إصدار
-    if (SAVED_VERSION !== APP_VERSION) {
-        console.log(`🔄 تحديث مطلوب: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
+    try {
+        const SAVED_VERSION = localStorage.getItem('appVersion');
         
-        try {
-            // حفظ الإحصائيات فقط إذا وجدت
+        // التحقق من الإصدار
+        if (SAVED_VERSION !== APP_VERSION) {
+            console.log(`🔄 تحديث مطلوب: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
+            
+            // حفظ الإحصائيات القديمة مؤقتاً
             const oldStats = localStorage.getItem('ramadanStatisticsData');
             
-            // مسح جميع البيانات عدا الإحصائيات مؤقتاً
-            const backupData = { statistics: oldStats };
+            // مسح البيانات القديمة
+            const keysToKeep = ['ramadanStatisticsData']; // نحتفظ بالإحصائيات
+            const allKeys = Object.keys(localStorage);
             
-            // مسح localStorage مع الاحتفاظ ببعض البيانات إذا أردت
-            const keysToRemove = Object.keys(localStorage).filter(key => 
-                key !== 'ramadanStatisticsData' && 
-                !key.startsWith('temp_')
-            );
-            
-            keysToRemove.forEach(key => localStorage.removeItem(key));
+            for (const key of allKeys) {
+                if (!keysToKeep.includes(key)) {
+                    localStorage.removeItem(key);
+                }
+            }
             
             // حفظ الإصدار الجديد
             localStorage.setItem('appVersion', APP_VERSION);
             
-            // استعادة الإحصائيات إذا أردت
-            if (oldStats) {
-                try {
-                    localStorage.setItem('ramadanStatisticsData', oldStats);
-                } catch (e) {
-                    console.log("لا يمكن استعادة الإحصائيات");
-                }
+            // إعادة تحميل إذا كان هناك نسخة قديمة
+            if (SAVED_VERSION) {
+                console.log("🔄 إعادة تحميل للتحديث...");
+                setTimeout(() => {
+                    window.location.href = window.location.pathname + '?v=' + Date.now();
+                }, 100);
+                return;
             }
-            
-            // إعادة تحميل الصفحة مع بارامتر عشوائي لمنع cache
-            setTimeout(() => {
-                if (!window.location.search.includes('nocache')) {
-                    window.location.href = window.location.pathname + '?nocache=' + Date.now();
-                } else {
-                    location.reload(true);
-                }
-            }, 500);
-            
-            return; // إيقاف تنفيذ باقي الكود
-        } catch (e) {
-            console.error("خطأ في التحديث:", e);
+            // إذا كان أول مرة، نكمل التنفيذ
         }
+    } catch (e) {
+        console.error("خطأ في التحقق من الإصدار:", e);
     }
     // ⭐⭐⭐⭐⭐⭐ نهاية حل التحديث التلقائي ⭐⭐⭐⭐⭐⭐
     
+    // الكود الأصلي يبدأ من هنا
     const savedState = localStorage.getItem('ramadanAppState');
     if (savedState) {
         try {
@@ -4882,6 +4873,7 @@
             currentDay = appState.currentDay || 1;
             currentTasbeehIndex = currentDay - 1;
             
+            // ... باقي الكود كما هو بدون تغيير
             if (!appState.tasbeehCounts || appState.tasbeehCounts.length !== 30) {
                 appState.tasbeehCounts = Array(30).fill(0);
             }
@@ -4921,9 +4913,17 @@
             }
         } catch (e) {
             console.error("خطأ في تحميل الحالة:", e);
-            // في حالة الخطأ، نمسح البيانات القديمة
-            localStorage.removeItem('ramadanAppState');
+            // في حالة الخطأ، نعرض شاشة الإعداد
+            showSetupScreen();
         }
+    } else {
+        // إذا لم توجد بيانات، نعرض شاشة الإعداد
+        showSetupScreen();
+    }
+    
+    // إذا لم يتم تعيين userName بعد، نعرض شاشة الإعداد
+    if (!userName) {
+        showSetupScreen();
     }
     
     checkDayChange();
@@ -4960,7 +4960,11 @@
     }
     
     // تسجيل Service Worker وطلب إذن الإشعارات
-    await registerServiceWorker();
+    try {
+        await registerServiceWorker();
+    } catch (e) {
+        console.error("خطأ في تسجيل Service Worker:", e);
+    }
     
     // عرض نافذة طلب الإذن بعد 3 ثوان إذا لم يكن هناك إذن مسبق
     setTimeout(() => {
@@ -4971,28 +4975,15 @@
             startNotificationSchedule();
         }
     }, 3000);
-    
-    // ⭐⭐⭐ إضافة مستمع لمسح cache عند العودة ⭐⭐⭐
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            // إذا كانت الصفحة من cache
-            console.log('🔄 الصفحة تم تحميلها من cache، التحقق من التحديثات');
-            if (localStorage.getItem('checkForUpdate') === 'true') {
-                localStorage.removeItem('checkForUpdate');
-                location.reload(true);
-            }
-        }
-    });
-    
-    // ⭐⭐⭐ التحقق من التحديثات كل 5 دقائق ⭐⭐⭐
-    setInterval(() => {
-        const currentVersion = localStorage.getItem('appVersion');
-        if (currentVersion !== APP_VERSION) {
-            console.log('🔄 تم اكتشاف إصدار جديد، سيتم التحديث عند التحميل القادم');
-            localStorage.setItem('checkForUpdate', 'true');
-        }
-    }, 5 * 60 * 1000); // كل 5 دقائق
-}      
+}
+
+// دالة مساعدة لعرض شاشة الإعداد
+function showSetupScreen() {
+    document.getElementById('userSetupModal').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+    setupRamadanDateInfo();
+    updateRamadanDayNote();
+} 
             
             // إضافة مستمعي أحداث لأزرار نافذة الإذن
             document.getElementById('allowNotifications').addEventListener('click', async () => {
@@ -5090,5 +5081,6 @@
     </script>
 </body>
 </html>
+
 
 
