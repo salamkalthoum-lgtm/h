@@ -4823,6 +4823,73 @@
         
         // دالة تهيئة التطبيق
         async function initializeApp() {
+        
+    const APP_VERSION = "1.0.1";
+    const SAVED_VERSION = localStorage.getItem('ramadanAppVersion');
+    
+    if (SAVED_VERSION !== APP_VERSION) {
+        console.log(`🔄 تحديث التطبيق: ${SAVED_VERSION || "بدون إصدار"} → ${APP_VERSION}`);
+        
+        // حفظ البيانات المهمة مؤقتاً
+        const importantData = {
+            statistics: localStorage.getItem('ramadanStatisticsData'),
+            userName: localStorage.getItem('lastUserName'),
+            currentDay: localStorage.getItem('lastCurrentDay')
+        };
+        
+        // مسح جميع البيانات عدا المفتاح الذي يحفظ البيانات المهمة مؤقتاً
+        const tempKey = `temp_backup_${Date.now()}`;
+        localStorage.setItem(tempKey, JSON.stringify(importantData));
+        
+        // مسح جميع البيانات القديمة
+        const keysToKeep = [tempKey];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!keysToKeep.includes(key)) {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        // حفظ الإصدار الجديد
+        localStorage.setItem('ramadanAppVersion', APP_VERSION);
+        
+        // استعادة البيانات المهمة
+        try {
+            const savedData = JSON.parse(localStorage.getItem(tempKey) || '{}');
+            
+            if (savedData.statistics) {
+                localStorage.setItem('ramadanStatisticsData', savedData.statistics);
+            }
+            if (savedData.userName) {
+                localStorage.setItem('lastUserName', savedData.userName);
+            }
+            if (savedData.currentDay) {
+                localStorage.setItem('lastCurrentDay', savedData.currentDay);
+            }
+        } catch (e) {
+            console.log("❌ خطأ في استعادة البيانات:", e);
+        }
+        
+        // مسح النسخة الاحتياطية المؤقتة
+        localStorage.removeItem(tempKey);
+        
+        // إظهار رسالة للمستخدم
+        const updateMessages = [
+            "✨ تم تحديث التطبيق بنجاح!",
+            "🔄 جارٍ تحميل الإصدار الجديد...",
+            "⚡ تحسينات جديدة في الطريق إليك!"
+        ];
+        
+        const randomMessage = updateMessages[Math.floor(Math.random() * updateMessages.length)];
+        alert(randomMessage);
+        
+        // إعادة تحميل الصفحة
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+        return;
+    }.
+            }
             const savedState = localStorage.getItem('ramadanAppState');
             if (savedState) {
                 try {
@@ -5015,3 +5082,4 @@
     </script>
 </body>
 </html>
+
