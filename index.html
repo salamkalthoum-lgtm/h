@@ -2456,6 +2456,17 @@
     </div>
 
     <script>
+        // ====== تعطيل Service Worker كلياً ======
+if ('serviceWorker' in navigator) {
+    // إزالة جميع Service Workers المسجلة
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => registration.unregister());
+        console.log('✅ تم إزالة جميع Service Workers');
+    });
+    
+    // منع تسجيل أي Service Worker جديد
+    navigator.serviceWorker.register = () => Promise.reject(new Error('Service Worker معطل'));
+}
         // بيانات التطبيق
         let currentDay = 1;
         let userName = "";
@@ -2814,7 +2825,9 @@
         async function registerServiceWorkerForUpdates() {
             if ('serviceWorker' in navigator) {
                 try {
-                    registration = await navigator.serviceWorker.register('sw.js');
+                 registration = await navigator.serviceWorker.register('./sw.js', {
+    scope: './'
+});
                     
                     console.log('✅ Service Worker مسجل للتحديثات');
                     
@@ -5217,6 +5230,7 @@
     </script>
 </body>
 </html>
+
 
 
 
