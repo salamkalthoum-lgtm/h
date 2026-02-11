@@ -5013,18 +5013,16 @@
             
             showDebugInfo();
         }
-        window.onload = function() {
-    // يتأكد إن الصفحة آخر نسخة
-    if (!window.location.hash.includes('force')) {
-      window.location.href = window.location.href + '#force';
-      window.location.reload(true);
-    }
+        if (!localStorage.getItem('site_version') || localStorage.getItem('site_version') !== '1.0.1') {
+    localStorage.setItem('site_version', '1.0.1');
+    location.reload(true);
         }
         // بدء التطبيق عند تحميل الصفحة
         window.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
+
 
 
 
