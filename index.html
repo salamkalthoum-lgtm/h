@@ -3370,7 +3370,7 @@
         // دالة لحساب اليوم الأول من رمضان بناءً على التاريخ الحالي
         function calculateRamadanStart(currentDate) {
             // رمضان 2026 يبدأ يوم 18 فبراير 2026
-            const ramadanStart2026 = new Date(2026, 1, 18);
+            const ramadanStart2026 = new Date(2026, 1, 19);
             
             const diffTime = currentDate.getTime() - ramadanStart2026.getTime();
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -3479,7 +3479,7 @@
             console.log("اليوم:", today.getDate());
             console.log("رمضان يبدأ: 18 فبراير 2026");
             
-            const ramadanStart = new Date(2026, 1, 18);
+            const ramadanStart = new Date(2026, 1, 19);
             console.log("بداية رمضان في النظام:", ramadanStart);
             
             const diff = today.getTime() - ramadanStart.getTime();
@@ -5026,14 +5026,3 @@ if (localStorage.getItem("siteVersion") !== currentVersion) {
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
