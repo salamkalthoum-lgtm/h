@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="pragma" content="no-cache">
+    <!-- تحديث قوي للكاش -->
+<meta http-equiv="cache-control" content="max-age=0, must-revalidate, no-store" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
     <title>يومك في رمضان</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5011,18 +5014,484 @@
             }
             
             showDebugInfo();
-        }
+        
+    }
+      
         
         // بدء التطبيق عند تحميل الصفحة
         window.addEventListener('DOMContentLoaded', initializeApp);
     </script>
-    <script>
-const currentVersion = "2"; // غيري الرقم كل تحديث
+  <script>
+// فرض تحديث الصفحة للمستخدمين القدامى
+const currentVersion = "19-02-2026-v1"; // غير الرقم مع كل تحديث مهم
 
-if (localStorage.getItem("siteVersion") !== currentVersion) {
-  localStorage.setItem("siteVersion", currentVersion);
-  location.reload(true);
+if (localStorage.getItem("ramadanSiteVersion") !== currentVersion) {
+    // حفظ الإصدار الجديد
+    localStorage.setItem("ramadanSiteVersion", currentVersion);
+    
+    // محاولة مسح الكاش القوي
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            for (let name of names) {
+                caches.delete(name);
+            }
+        });
+    }
+    
+    // إعادة تحميل الصفحة من السيرفر وليس من الكاش
+    location.reload(true);
 }
-    </script>
+</script>
+    <!-- نافذة إشعار التحديثات -->
+<div class="update-modal" id="updateModal" style="display: none;">
+    <div class="update-content">
+        <div class="update-header">
+            <i class="fas fa-moon" style="font-size: 2rem; color: var(--ramadan-gold);"></i>
+            <h2>تحديث جديد في الموقع! <i class="fas fa-star" style="color: var(--ramadan-gold);"></i></h2>
+            <button class="update-close" onclick="closeUpdateModal()">×</button>
+        </div>
+        <div class="update-body" id="updateBody">
+            <!-- محتوى التحديثات سيتم إضافته هنا -->
+        </div>
+        <div class="update-footer">
+            <button class="btn btn-primary" onclick="markUpdatesAsRead()">تمت القراءة</button>
+            <button class="btn btn-secondary" onclick="closeUpdateModal()">لاحقاً</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* تنسيق نافذة التحديثات */
+.update-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.update-content {
+    background: linear-gradient(135deg, var(--white), var(--light-purple));
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(138, 43, 226, 0.3);
+    border: 2px solid var(--ramadan-gold);
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+.update-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    padding: 20px;
+    border-radius: 18px 18px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--ramadan-gold);
+    position: relative;
+}
+
+.update-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.update-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    font-size: 1.8rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.update-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.update-body {
+    padding: 25px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.update-item {
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-right: 5px solid var(--primary-color);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.update-item::before {
+    content: "✨";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 3rem;
+    opacity: 0.1;
+    transform: rotate(15deg);
+}
+
+.update-item:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+}
+
+.update-item h4 {
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.update-item h4 i {
+    color: var(--ramadan-gold);
+}
+
+.update-item p {
+    color: var(--dark-gray);
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.update-date {
+    font-size: 0.8rem;
+    color: #999;
+    display: block;
+    margin-top: 8px;
+    text-align: left;
+}
+
+.update-badge {
+    background-color: var(--ramadan-gold);
+    color: var(--primary-color);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.update-footer {
+    padding: 20px;
+    border-top: 2px solid var(--light-gray);
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0 0 18px 18px;
+}
+
+.update-footer .btn {
+    min-width: 120px;
+    padding: 12px 20px;
+}
+
+.btn-secondary {
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    border: 2px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* شارة التحديث في القائمة */
+.update-bell {
+    position: relative;
+    animation: shake 2s infinite;
+}
+
+.update-badge-icon {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    10%, 30%, 50%, 70%, 90% { transform: rotate(10deg); }
+    20%, 40%, 60%, 80% { transform: rotate(-10deg); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* أيقونة التحديث في القائمة */
+.nav-menu a i.fa-bullhorn {
+    color: var(--ramadan-gold);
+}
+</style>
+
+<script>
+// بيانات التحديثات
+const siteUpdates = [
+    {
+        id: 1,
+        title: "🌙 بداية رمضان 2026",
+        description: "تم تعديل بداية رمضان إلى 19 فبراير 2026. الآن يمكنك متابعة يومياتك الرمضانية بدقة.",
+        date: "17 فبراير 2026",
+        badge: "جديد",
+        icon: "fa-calendar-alt"
+    },
+    {
+        id: 2,
+        title: "🔔 نظام الإشعارات المحسن",
+        description: "أضفنا إشعارات جديدة: تذكير بالصلاة، أذكار الصباح والمساء، تسبيحات يومية، وأدعية متنوعة.",
+        date: "17 فبراير 2026",
+        badge: "محدث",
+        icon: "fa-bell"
+    },
+    {
+        id: 3,
+        title: "📱 تحديث واجهة المستخدم",
+        description: "تحسينات في التصميم وإضافة قائمة تنقل جديدة سهلة الاستخدام.",
+        date: "17 فبراير 2026",
+        badge: "تحسين",
+        icon: "fa-paint-brush"
+    },
+    {
+        id: 4,
+        title: "🤲 إضافة أدعية وأحاديث جديدة",
+        description: "تم إضافة 30 دعاء وحديث جديد لكل يوم من أيام رمضان.",
+        date: "17 فبراير 2026",
+        badge: "إضافة",
+        icon: "fa-hands-praying"
+    },
+    {
+        id: 5,
+        title: "📊 إحصائيات الموقع",
+        description: "إضافة قسم الإحصائيات لمشاهدة عدد الزوار وتفاعلاتهم.",
+        date: "17 فبراير 2026",
+        badge: "ميزة جديدة",
+        icon: "fa-chart-bar"
+    }
+];
+
+// دالة عرض نافذة التحديثات
+function showUpdateModal() {
+    const modal = document.getElementById('updateModal');
+    const updateBody = document.getElementById('updateBody');
+    
+    // ترتيب التحديثات من الأحدث إلى الأقدم
+    const sortedUpdates = [...siteUpdates].reverse();
+    
+    let updatesHTML = '';
+    sortedUpdates.forEach(update => {
+        updatesHTML += `
+            <div class="update-item">
+                <h4>
+                    <i class="fas ${update.icon}"></i>
+                    ${update.title}
+                    <span class="update-badge">${update.badge}</span>
+                </h4>
+                <p>${update.description}</p>
+                <small class="update-date">📅 ${update.date}</small>
+            </div>
+        `;
+    });
+    
+    updateBody.innerHTML = updatesHTML;
+    modal.style.display = 'flex';
+    
+    // تشغيل صوت الإشعار إذا كان متاحاً (اختياري)
+    try {
+        const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAAA8ISEhISEhISEhISEhISEhISEhIQ==');
+        audio.play();
+    } catch(e) {
+        console.log('تعذر تشغيل الصوت');
+    }
+}
+
+// دالة إغلاق نافذة التحديثات
+function closeUpdateModal() {
+    document.getElementById('updateModal').style.display = 'none';
+}
+
+// دالة تحديث حالة القراءة
+function markUpdatesAsRead() {
+    localStorage.setItem('lastUpdateRead', siteUpdates[0].id);
+    closeUpdateModal();
+    
+    // إخفاء شارة التحديث من القائمة إذا كانت موجودة
+    const updateBadge = document.getElementById('updateBadge');
+    if (updateBadge) {
+        updateBadge.style.display = 'none';
+    }
+}
+
+// دالة إضافة أيقونة التحديث إلى القائمة
+function addUpdateBadgeToNav() {
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu) {
+        // البحث عن رابط الصفحة الرئيسية أو إضافة عنصر جديد
+        const homeLink = navMenu.querySelector('a[href="#dashboard"]');
+        if (homeLink) {
+            const badgeSpan = document.createElement('span');
+            badgeSpan.id = 'updateBadge';
+            badgeSpan.className = 'update-badge-icon';
+            badgeSpan.innerHTML = '!';
+            badgeSpan.style.position = 'relative';
+            badgeSpan.style.top = '-10px';
+            badgeSpan.style.right = '-5px';
+            badgeSpan.style.display = 'inline-block';
+            
+            // إضافة شارة بجانب أيقونة البيت
+            const icon = homeLink.querySelector('i');
+            if (icon) {
+                icon.classList.add('update-bell');
+                icon.parentNode.insertBefore(badgeSpan, icon.nextSibling);
+            }
+        }
+    }
+}
+
+// دالة التحقق من وجود تحديثات جديدة
+function checkForUpdates() {
+    const lastRead = localStorage.getItem('lastUpdateRead');
+    const latestUpdateId = siteUpdates[0].id;
+    
+    if (!lastRead || parseInt(lastRead) < latestUpdateId) {
+        // تأخير عرض النافذة 3 ثواني بعد تحميل الصفحة
+        setTimeout(() => {
+            showUpdateModal();
+        }, 3000);
+        
+        addUpdateBadgeToNav();
+    }
+}
+
+// تعديل دالة initializeApp لإضافة التحقق من التحديثات
+const originalInitializeApp = initializeApp;
+initializeApp = function() {
+    originalInitializeApp();
+    
+    // إضافة عنصر التحديثات إلى القائمة
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu && !document.querySelector('.nav-menu a[href="#updates"]')) {
+        const updatesItem = document.createElement('li');
+        updatesItem.innerHTML = `
+            <a href="#" onclick="showUpdateModal(); return false;">
+                <i class="fas fa-bullhorn update-bell"></i> 
+                ما الجديد
+                <span class="update-badge-icon" style="position: relative; top: -8px; right: -3px;">!</span>
+            </a>
+        `;
+        navMenu.appendChild(updatesItem);
+    }
+    
+    // التحقق من التحديثات
+    setTimeout(() => {
+        checkForUpdates();
+    }, 2000);
+};
+
+// دالة لإظهار إشعار منبثق صغير
+function showToastNotification(title, message, icon = 'fa-info-circle') {
+    const notification = document.createElement('div');
+    notification.className = 'toast-notification';
+    notification.innerHTML = `
+        <i class="fas ${icon}" style="color: var(--primary-color);"></i>
+        <div>
+            <strong>${title}</strong>
+            <p style="margin: 5px 0 0; font-size: 0.9rem;">${message}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #999; cursor: pointer;">×</button>
+    `;
+    
+    // تنسيق الإشعار المنبثق
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        left: 20px;
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        border-right: 5px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        z-index: 10001;
+        animation: slideInLeft 0.5s ease;
+        max-width: 350px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.style.animation = 'slideOutLeft 0.5s ease';
+            setTimeout(() => notification.remove(), 500);
+        }
+    }, 8000);
+}
+
+// إضافة animation للإخفاء
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideOutLeft {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(-100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+</script>
+    
 </body>
 </html>
+
