@@ -2,7 +2,7 @@
   "name": "يومك في رمضان",
   "short_name": "رمضان",
   "description": "تطبيق متكامل لشهر رمضان المبارك",
-  "start_url": "/",
+  "start_url": "/٢/",
   "display": "standalone",
   "background_color": "#8A2BE2",
   "theme_color": "#8A2BE2",
@@ -19,7 +19,7 @@
       "type": "image/svg+xml"
     }
   ],
-  "scope": "/",
+  "scope": "/h/",
   "lang": "ar",
   "dir": "rtl"
 }
